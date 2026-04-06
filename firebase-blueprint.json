@@ -1,0 +1,107 @@
+{
+  "entities": {
+    "Event": {
+      "title": "Event",
+      "description": "An event of the church",
+      "type": "object",
+      "properties": {
+        "img": { "type": "string", "description": "URL of the event image" },
+        "text": { "type": "string", "description": "Description of the event" },
+        "date": { "type": "string", "format": "date-time", "description": "Date of the event" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["text", "date", "createdAt"]
+    },
+    "Testimony": {
+      "title": "Testimony",
+      "description": "A testimony from a member",
+      "type": "object",
+      "properties": {
+        "img": { "type": "string", "description": "URL of the testimony image" },
+        "text": { "type": "string", "description": "The testimony text" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["text", "createdAt"]
+    },
+    "GalleryItem": {
+      "title": "Gallery Item",
+      "description": "A picture or video in the gallery",
+      "type": "object",
+      "properties": {
+        "url": { "type": "string", "description": "URL of the media" },
+        "type": { "type": "string", "enum": ["image", "video"] },
+        "description": { "type": "string", "description": "Description of the media" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["url", "type", "description", "createdAt"]
+    },
+    "PropheticFocus": {
+      "title": "Prophetic Focus",
+      "description": "The prophetic focus of the month/year",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "text": { "type": "string" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "text", "updatedAt"]
+    },
+    "ContactInfo": {
+      "title": "Contact Info",
+      "description": "Contact and offering information",
+      "type": "object",
+      "properties": {
+        "paymentMethods": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "code": { "type": "string" }
+            },
+            "required": ["name", "code"]
+          }
+        },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["paymentMethods", "updatedAt"]
+    },
+    "User": {
+      "title": "User",
+      "description": "A user of the website",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "user"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["email", "role", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/events/{eventId}": {
+      "schema": { "$ref": "#/entities/Event" },
+      "description": "Events collection"
+    },
+    "/testimonies/{testimonyId}": {
+      "schema": { "$ref": "#/entities/Testimony" },
+      "description": "Testimonies collection"
+    },
+    "/gallery/{itemId}": {
+      "schema": { "$ref": "#/entities/GalleryItem" },
+      "description": "Gallery collection"
+    },
+    "/settings/propheticFocus": {
+      "schema": { "$ref": "#/entities/PropheticFocus" },
+      "description": "Prophetic focus document"
+    },
+    "/settings/contactInfo": {
+      "schema": { "$ref": "#/entities/ContactInfo" },
+      "description": "Contact info document"
+    },
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "Users collection"
+    }
+  }
+}

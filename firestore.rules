@@ -1,0 +1,200 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: events
+    // Document ID: auto-generated
+    // Fields:
+    //   - img: string (optional) - URL of the event image
+    //   - text: string (required) - Description of the event
+    //   - date: string (required) - Date of the event
+    //   - createdAt: string (required) - Creation timestamp
+    //
+    // Collection: testimonies
+    // Document ID: auto-generated
+    // Fields:
+    //   - img: string (optional) - URL of the testimony image
+    //   - title: string (required) - The testimony title
+    //   - name: string (required) - Name of the person testifying
+    //   - text: string (required) - The testimony text
+    //   - createdAt: string (required) - Creation timestamp
+    //
+    // Collection: gallery
+    // Document ID: auto-generated
+    // Fields:
+    //   - url: string (required) - URL of the media
+    //   - type: string (required) - 'image' or 'video'
+    //   - description: string (required) - Description of the media
+    //   - createdAt: string (required) - Creation timestamp
+    //
+    // Collection: settings
+    // Document ID: 'propheticFocus' | 'contactInfo'
+    // Fields (propheticFocus):
+    //   - title: string (required)
+    //   - text: string (required)
+    //   - updatedAt: string (required)
+    // Fields (contactInfo):
+    //   - paymentMethods: list of objects {name: string, code: string} (required)
+    //   - updatedAt: string (required)
+    //
+    // Collection: users
+    // Document ID: uid
+    // Fields:
+    //   - email: string (required)
+    //   - role: string (required) - 'admin' or 'user'
+    //   - createdAt: string (required)
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && (
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin') ||
+        (request.auth.token.email == "ifoumiguel@gmail.com")
+      );
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+
+    function hasOnlyAllowedFields(fields) {
+      return request.resource.data.keys().hasOnly(fields);
+    }
+
+    function validStringLength(field, minLen, maxLen) {
+      return request.resource.data[field] is string &&
+        request.resource.data[field].size() >= minLen &&
+        request.resource.data[field].size() <= maxLen;
+    }
+
+    function isValidOptionalString(field, minLen, maxLen) {
+      return !('field' in request.resource.data) ||
+             (request.resource.data[field] is string &&
+              request.resource.data[field].size() >= minLen &&
+              request.resource.data[field].size() <= maxLen);
+    }
+
+    // ===============================================================
+    // Domain Validators
+    // ===============================================================
+
+    function isValidEvent() {
+      return hasRequiredFields(['text', 'date', 'createdAt']) &&
+             hasOnlyAllowedFields(['img', 'text', 'date', 'createdAt']) &&
+             validStringLength('text', 1, 5000) &&
+             validStringLength('date', 1, 100) &&
+             validStringLength('createdAt', 1, 100) &&
+             (!('img' in request.resource.data) || validStringLength('img', 1, 5000000));
+    }
+
+    function isValidTestimony() {
+      return hasRequiredFields(['title', 'name', 'text', 'createdAt']) &&
+             hasOnlyAllowedFields(['img', 'title', 'name', 'text', 'createdAt']) &&
+             validStringLength('title', 1, 200) &&
+             validStringLength('name', 1, 200) &&
+             validStringLength('text', 1, 5000) &&
+             validStringLength('createdAt', 1, 100) &&
+             (!('img' in request.resource.data) || validStringLength('img', 1, 5000000));
+    }
+
+    function isValidGalleryItem() {
+      return hasRequiredFields(['url', 'type', 'description', 'createdAt']) &&
+             hasOnlyAllowedFields(['url', 'type', 'description', 'createdAt']) &&
+             validStringLength('url', 1, 5000000) &&
+             request.resource.data.type in ['image', 'video'] &&
+             validStringLength('description', 0, 1000) &&
+             validStringLength('createdAt', 1, 100);
+    }
+
+    function isValidPropheticFocus() {
+      return hasRequiredFields(['title', 'text', 'updatedAt']) &&
+             hasOnlyAllowedFields(['title', 'text', 'updatedAt']) &&
+             validStringLength('title', 1, 200) &&
+             validStringLength('text', 1, 5000) &&
+             validStringLength('updatedAt', 1, 100);
+    }
+
+    function isValidContactInfo() {
+      return hasRequiredFields(['paymentMethods', 'updatedAt']) &&
+             hasOnlyAllowedFields(['paymentMethods', 'updatedAt']) &&
+             request.resource.data.paymentMethods is list &&
+             request.resource.data.paymentMethods.size() <= 20 &&
+             validStringLength('updatedAt', 1, 100);
+    }
+
+    function isValidUser() {
+      return hasRequiredFields(['email', 'role', 'createdAt']) &&
+             hasOnlyAllowedFields(['email', 'role', 'createdAt']) &&
+             validStringLength('email', 1, 200) &&
+             request.resource.data.role in ['admin', 'user'] &&
+             validStringLength('createdAt', 1, 100);
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /events/{eventId} {
+      allow read: if true;
+      allow create: if isAdmin() && isValidEvent();
+      allow update: if isAdmin() && isValidEvent() && (!('createdAt' in resource.data) || request.resource.data.createdAt == resource.data.createdAt);
+      allow delete: if isAdmin();
+    }
+
+    match /testimonies/{testimonyId} {
+      allow read: if true;
+      allow create: if isAdmin() && isValidTestimony();
+      allow update: if isAdmin() && isValidTestimony() && (!('createdAt' in resource.data) || request.resource.data.createdAt == resource.data.createdAt);
+      allow delete: if isAdmin();
+    }
+
+    match /gallery/{itemId} {
+      allow read: if true;
+      allow create: if isAdmin() && isValidGalleryItem();
+      allow update: if isAdmin() && isValidGalleryItem() && (!('createdAt' in resource.data) || request.resource.data.createdAt == resource.data.createdAt);
+      allow delete: if isAdmin();
+    }
+
+    match /settings/propheticFocus {
+      allow read: if true;
+      allow create: if isAdmin() && isValidPropheticFocus();
+      allow update: if isAdmin() && isValidPropheticFocus();
+      allow delete: if isAdmin();
+    }
+
+    match /settings/contactInfo {
+      allow read: if true;
+      allow create: if isAdmin() && isValidContactInfo();
+      allow update: if isAdmin() && isValidContactInfo();
+      allow delete: if isAdmin();
+    }
+
+    match /users/{userId} {
+      // Users can read their own profile, admins can read all
+      allow read: if isOwner(userId) || isAdmin();
+      // Users can create their own profile, but cannot make themselves admin unless they are the default admin
+      allow create: if isAuthenticated() && isOwner(userId) && isValidUser() && 
+                    (request.resource.data.role == 'user' || isAdmin());
+      // Only admins can update user roles
+      allow update: if isAdmin() && isValidUser() && 
+                    (!('createdAt' in resource.data) || request.resource.data.createdAt == resource.data.createdAt) &&
+                    (!('email' in resource.data) || request.resource.data.email == resource.data.email);
+      allow delete: if isAdmin();
+    }
+  }
+}
