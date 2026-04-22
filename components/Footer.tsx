@@ -13,14 +13,14 @@ export const Footer: React.FC = () => {
         </div>
         
         <div className="flex gap-6">
-          <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="hover:text-nobel-gold transition-colors">
-            <Youtube size={24} />
+          <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" aria-label="Visit our YouTube channel" className="hover:text-nobel-gold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-nobel-gold rounded-md p-1">
+            <Youtube size={24} aria-hidden="true" />
           </a>
-          <a href="https://www.facebook.com/profile.php?id=61574795353364" target="_blank" rel="noopener noreferrer" className="hover:text-nobel-gold transition-colors">
-            <Facebook size={24} />
+          <a href="https://www.facebook.com/profile.php?id=61574795353364" target="_blank" rel="noopener noreferrer" aria-label="Visit our Facebook page" className="hover:text-nobel-gold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-nobel-gold rounded-md p-1">
+            <Facebook size={24} aria-hidden="true" />
           </a>
-          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-nobel-gold transition-colors">
-            <Instagram size={24} />
+          <a href="https://www.instagram.com/winners_chapel_intl_simbock?igsh=eWtqZzRybjJpeGF2" target="_blank" rel="noopener noreferrer" aria-label="Visit our Instagram page" className="hover:text-nobel-gold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-nobel-gold rounded-md p-1">
+            <Instagram size={24} aria-hidden="true" />
           </a>
         </div>
         

@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 import { db } from '../firebase';
 import { isAfter, isBefore, isSameDay } from 'date-fns';
-import { X, Facebook, Twitter, Link as LinkIcon, Check } from 'lucide-react';
+import { X, Facebook, Twitter, Link as LinkIcon, Check, Loader2 } from 'lucide-react';
 
 export const Events: React.FC = () => {
   const [events, setEvents] = useState<any[]>([]);
@@ -33,7 +33,14 @@ export const Events: React.FC = () => {
     fetchEvents();
   }, []);
 
-  if (loading) return <div className="pt-32 text-center">Loading events...</div>;
+  if (loading) {
+    return (
+      <div className="pt-32 pb-24 flex flex-col items-center justify-center min-h-[60vh]">
+        <Loader2 className="w-12 h-12 text-nobel-gold animate-spin mb-4" />
+        <p className="text-stone-500 text-lg">Loading events...</p>
+      </div>
+    );
+  }
 
   const today = new Date();
   
@@ -55,8 +62,16 @@ export const Events: React.FC = () => {
     const hasImage = !!event.img;
     return (
       <div 
-        className={`bg-white rounded-2xl overflow-hidden shadow-sm border border-stone-100 flex flex-col cursor-pointer hover:shadow-md transition-shadow ${isMain && hasImage ? 'md:flex-row' : ''}`}
+        role="button"
+        tabIndex={0}
+        className={`bg-white rounded-2xl overflow-hidden shadow-sm border border-stone-100 flex flex-col cursor-pointer hover:shadow-md transition-shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-nobel-gold focus-visible:ring-offset-2 ${isMain && hasImage ? 'md:flex-row' : ''}`}
         onClick={() => setSelectedEvent(event)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            setSelectedEvent(event);
+          }
+        }}
       >
         {hasImage && (
           <div className={`${isMain ? 'md:w-1/2' : 'w-full'} h-64 ${isMain ? 'md:h-auto min-h-[16rem]' : ''}`}>
@@ -80,8 +95,19 @@ export const Events: React.FC = () => {
   return (
     <div className="pt-32 pb-24 container mx-auto px-6">
       <Helmet>
-        <title>Upcoming Events | WCI Simbock Yaoundé</title>
-        <meta name="description" content="Discover upcoming events, conferences, and special services at Winners Chapel International Simbock. Join our community in Yaoundé." />
+        {selectedEvent ? (
+          <>
+            <title>{`Event: ${new Date(selectedEvent.date).toLocaleDateString()} | WCI Simbock`}</title>
+            <meta name="description" content={selectedEvent.text ? `${selectedEvent.text.substring(0, 150)}...` : "Join us for this upcoming event at Winners Chapel International Simbock."} />
+            <meta name="keywords" content="church event, WCI Simbock, Winners Chapel, Yaoundé, upcoming event" />
+          </>
+        ) : (
+          <>
+            <title>Upcoming Events | WCI Simbock Yaoundé</title>
+            <meta name="description" content="Discover upcoming events, conferences, and special services at Winners Chapel International Simbock. Join our community in Yaoundé." />
+            <meta name="keywords" content="events, church, Winners Chapel, Yaoundé, WCI Simbock, conferences, services" />
+          </>
+        )}
         <link rel="canonical" href="https://wcsimbock.org/events" />
       </Helmet>
 
@@ -132,10 +158,11 @@ export const Events: React.FC = () => {
             onClick={e => e.stopPropagation()}
           >
             <button 
-              className="absolute top-4 right-4 z-10 p-2 bg-black/20 hover:bg-black/40 text-white rounded-full transition-colors backdrop-blur-md"
+              className="absolute top-4 right-4 z-10 p-2 bg-black/20 hover:bg-black/40 text-white rounded-full transition-colors backdrop-blur-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
               onClick={() => setSelectedEvent(null)}
+              aria-label="Close modal"
             >
-              <X size={24} />
+              <X size={24} aria-hidden="true" />
             </button>
             
             <div className="overflow-y-auto flex-1">
@@ -164,26 +191,29 @@ export const Events: React.FC = () => {
                     href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="p-2 bg-stone-100 text-stone-600 rounded-full hover:bg-blue-600 hover:text-white transition-colors"
+                    className="p-2 bg-stone-100 text-stone-600 rounded-full hover:bg-blue-600 hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2"
                     title="Share on Facebook"
+                    aria-label="Share on Facebook"
                   >
-                    <Facebook size={20} />
+                    <Facebook size={20} aria-hidden="true" />
                   </a>
                   <a 
                     href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(`Check out this event: ${selectedEvent.text.substring(0, 50)}...`)}`} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="p-2 bg-stone-100 text-stone-600 rounded-full hover:bg-sky-500 hover:text-white transition-colors"
+                    className="p-2 bg-stone-100 text-stone-600 rounded-full hover:bg-sky-500 hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2"
                     title="Share on Twitter"
+                    aria-label="Share on Twitter"
                   >
-                    <Twitter size={20} />
+                    <Twitter size={20} aria-hidden="true" />
                   </a>
                   <button 
                     onClick={handleCopyLink}
-                    className="p-2 bg-stone-100 text-stone-600 rounded-full hover:bg-stone-200 hover:text-stone-900 transition-colors"
+                    className="p-2 bg-stone-100 text-stone-600 rounded-full hover:bg-stone-200 hover:text-stone-900 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-900 focus-visible:ring-offset-2"
                     title="Copy Link"
+                    aria-label="Copy link to clipboard"
                   >
-                    {copied ? <Check size={20} className="text-green-600" /> : <LinkIcon size={20} />}
+                    {copied ? <Check size={20} className="text-green-600" aria-hidden="true" /> : <LinkIcon size={20} aria-hidden="true" />}
                   </button>
                 </div>
               </div>

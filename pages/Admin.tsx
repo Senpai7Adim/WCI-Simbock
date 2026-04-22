@@ -5,6 +5,7 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '../firebase';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { Loader2 } from 'lucide-react';
 
 export const Admin: React.FC = () => {
   const { user, isAdmin, loading } = useAuth();
@@ -23,6 +24,7 @@ export const Admin: React.FC = () => {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   
   const [uploading, setUploading] = useState(false);
+  const [dataLoading, setDataLoading] = useState(true);
 
   useEffect(() => {
     if (!loading && !isAdmin) {
@@ -32,11 +34,18 @@ export const Admin: React.FC = () => {
 
   useEffect(() => {
     if (isAdmin) {
-      fetchSettings();
-      fetchUsers();
-      fetchData('events', setEvents);
-      fetchData('testimonies', setTestimonies);
-      fetchData('gallery', setGallery);
+      const loadAllData = async () => {
+        setDataLoading(true);
+        await Promise.all([
+          fetchSettings(),
+          fetchUsers(),
+          fetchData('events', setEvents),
+          fetchData('testimonies', setTestimonies),
+          fetchData('gallery', setGallery)
+        ]);
+        setDataLoading(false);
+      };
+      loadAllData();
     }
   }, [isAdmin]);
 
@@ -160,9 +169,13 @@ export const Admin: React.FC = () => {
         } else {
           throw new Error(data.error?.message || 'Upload failed');
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error("Error uploading to Cloudinary: ", error);
-        toast.error('Error uploading image. Please try again.');
+        if (error.message && error.message.includes('Upload preset')) {
+          toast.error('Cloudinary Error: Upload preset not found. Please create an "unsigned" upload preset in your Cloudinary settings and update your environment variables.', { duration: 6000 });
+        } else {
+          toast.error(`Error uploading image: ${error.message || 'Please try again.'}`);
+        }
       } finally {
         setUploading(false);
       }
@@ -231,9 +244,32 @@ export const Admin: React.FC = () => {
           toast.error('Please provide a media URL.');
           return;
         }
+
+        const type = formData.type || 'image';
+        let finalUrl = formData.url.trim();
+
+        if (type === 'image') {
+          if (!finalUrl.startsWith('http') && !finalUrl.startsWith('data:image')) {
+            toast.error('Please provide a valid image URL starting with http/https or upload an image.');
+            return;
+          }
+        } else if (type === 'video') {
+          const ytId = getYouTubeId(finalUrl);
+          if (ytId) {
+            // It's a valid YouTube URL format, extract and normalize the URL for embedding later
+            finalUrl = `https://www.youtube.com/watch?v=${ytId}`;
+          } else {
+             // Check if it's a direct video link as fallback
+             if (!finalUrl.match(/\.(mp4|webm|ogg|mov)(\?.*)?$/i)) {
+               toast.error('Please provide a valid YouTube URL or a direct video link (.mp4, .webm).');
+               return;
+             }
+          }
+        }
+
         dataToSave = {
-          type: formData.type || 'image',
-          url: formData.url,
+          type: type,
+          url: finalUrl,
           description: formData.description || '',
           createdAt: formData.createdAt || editingItem.createdAt || new Date().toISOString()
         };
@@ -280,7 +316,14 @@ export const Admin: React.FC = () => {
     return (match && match[2].length === 11) ? match[2] : null;
   };
 
-  if (loading || !isAdmin) return <div className="pt-32 text-center">Loading...</div>;
+  if (loading || !isAdmin || dataLoading) {
+    return (
+      <div className="pt-32 pb-24 flex flex-col items-center justify-center min-h-[60vh]">
+        <Loader2 className="w-12 h-12 text-nobel-gold animate-spin mb-4" />
+        <p className="text-stone-500 text-lg">Loading admin dashboard...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="pt-32 pb-24 container mx-auto px-6 max-w-6xl">
@@ -291,7 +334,8 @@ export const Admin: React.FC = () => {
           <button
             key={tab}
             onClick={() => { setActiveTab(tab); handleCancelEdit(); }}
-            className={`px-6 py-2 rounded-full font-medium tracking-wide uppercase text-sm transition-colors ${activeTab === tab ? 'bg-stone-900 text-white' : 'bg-stone-100 text-stone-600 hover:bg-stone-200'}`}
+            className={`px-6 py-2 rounded-full font-medium tracking-wide uppercase text-sm transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-nobel-gold focus-visible:ring-offset-2 ${activeTab === tab ? 'bg-stone-900 text-white' : 'bg-stone-100 text-stone-600 hover:bg-stone-200'}`}
+            aria-current={activeTab === tab ? 'page' : undefined}
           >
             {tab}
           </button>
@@ -306,19 +350,21 @@ export const Admin: React.FC = () => {
               <div className="space-y-4">
                 <input
                   type="text"
+                  aria-label="Prophetic Focus Title"
                   value={propheticFocus.title}
                   onChange={e => setPropheticFocus({ ...propheticFocus, title: e.target.value })}
                   placeholder="Title (e.g., 2025 is my new era year)"
                   className="w-full px-4 py-3 rounded-lg border border-stone-300 focus:ring-2 focus:ring-nobel-gold outline-none"
                 />
                 <textarea
+                  aria-label="Prophetic Focus Description"
                   value={propheticFocus.text}
                   onChange={e => setPropheticFocus({ ...propheticFocus, text: e.target.value })}
                   placeholder="Description"
                   rows={4}
                   className="w-full px-4 py-3 rounded-lg border border-stone-300 focus:ring-2 focus:ring-nobel-gold outline-none resize-none"
                 />
-                <button onClick={handleSaveFocus} className="px-6 py-3 bg-nobel-gold text-white rounded-lg hover:bg-red-700 transition-colors font-medium">
+                <button onClick={handleSaveFocus} className="px-6 py-3 bg-nobel-gold text-white rounded-lg hover:bg-red-700 transition-colors font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-nobel-gold focus-visible:ring-offset-2">
                   Save Prophetic Focus
                 </button>
               </div>
@@ -331,6 +377,7 @@ export const Admin: React.FC = () => {
                   <div key={index} className="flex flex-col sm:flex-row gap-4">
                     <input
                       type="text"
+                      aria-label="Payment Method Name"
                       value={method.name}
                       onChange={e => {
                         const newMethods = [...contactInfo.paymentMethods];
@@ -342,6 +389,7 @@ export const Admin: React.FC = () => {
                     />
                     <input
                       type="text"
+                      aria-label="Payment Method Code"
                       value={method.code}
                       onChange={e => {
                         const newMethods = [...contactInfo.paymentMethods];
@@ -356,7 +404,8 @@ export const Admin: React.FC = () => {
                         const newMethods = contactInfo.paymentMethods.filter((_, i) => i !== index);
                         setContactInfo({ ...contactInfo, paymentMethods: newMethods });
                       }}
-                      className="w-full sm:w-auto px-4 py-3 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors"
+                      className="w-full sm:w-auto px-4 py-3 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-red-600 focus-visible:ring-offset-2"
+                      aria-label={`Remove ${method.name || 'payment method'}`}
                     >
                       Remove
                     </button>
@@ -364,12 +413,12 @@ export const Admin: React.FC = () => {
                 ))}
                 <button
                   onClick={() => setContactInfo({ ...contactInfo, paymentMethods: [...contactInfo.paymentMethods, { name: '', code: '' }] })}
-                  className="px-6 py-3 bg-stone-100 text-stone-700 rounded-lg hover:bg-stone-200 transition-colors font-medium"
+                  className="px-6 py-3 bg-stone-100 text-stone-700 rounded-lg hover:bg-stone-200 transition-colors font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-700 focus-visible:ring-offset-2"
                 >
                   Add Method
                 </button>
                 <div className="mt-4">
-                  <button onClick={handleSaveContact} className="px-6 py-3 bg-nobel-gold text-white rounded-lg hover:bg-red-700 transition-colors font-medium">
+                  <button onClick={handleSaveContact} className="px-6 py-3 bg-nobel-gold text-white rounded-lg hover:bg-red-700 transition-colors font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-nobel-gold focus-visible:ring-offset-2">
                     Save Payment Methods
                   </button>
                 </div>
@@ -385,9 +434,9 @@ export const Admin: React.FC = () => {
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="border-b border-stone-200">
-                    <th className="py-4 px-6 font-medium text-stone-500 uppercase tracking-wider text-sm">Email</th>
-                    <th className="py-4 px-6 font-medium text-stone-500 uppercase tracking-wider text-sm">Role</th>
-                    <th className="py-4 px-6 font-medium text-stone-500 uppercase tracking-wider text-sm">Actions</th>
+                    <th className="py-4 px-6 font-medium text-stone-600 uppercase tracking-wider text-sm">Email</th>
+                    <th className="py-4 px-6 font-medium text-stone-600 uppercase tracking-wider text-sm">Role</th>
+                    <th className="py-4 px-6 font-medium text-stone-600 uppercase tracking-wider text-sm">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -401,12 +450,12 @@ export const Admin: React.FC = () => {
                       </td>
                       <td className="py-4 px-6">
                         {u.role !== 'admin' ? (
-                          <button onClick={() => handlePromoteUser(u.id)} className="text-sm text-nobel-gold hover:underline font-medium">
+                          <button onClick={() => handlePromoteUser(u.id)} className="text-sm text-nobel-gold hover:underline font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-nobel-gold rounded px-1">
                             Promote to Admin
                           </button>
                         ) : (
                           user?.uid !== u.id && (
-                            <button onClick={() => handleDemoteUser(u.id)} className="text-sm text-red-600 hover:underline font-medium">
+                            <button onClick={() => handleDemoteUser(u.id)} className="text-sm text-red-600 hover:underline font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-red-600 rounded px-1">
                               Demote to User
                             </button>
                           )
@@ -425,7 +474,7 @@ export const Admin: React.FC = () => {
             <div className="flex justify-between items-center mb-6">
               <h2 className="font-serif text-3xl text-stone-800 capitalize">Manage {activeTab}</h2>
               {!editingItem && (
-                <button onClick={handleAddNew} className="px-6 py-2 bg-stone-900 text-white rounded-full hover:bg-stone-800 transition-colors font-medium tracking-wide text-sm">
+                <button onClick={handleAddNew} className="px-6 py-2 bg-stone-900 text-white rounded-full hover:bg-stone-800 transition-colors font-medium tracking-wide text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-900 focus-visible:ring-offset-2">
                   Add New
                 </button>
               )}
@@ -437,14 +486,14 @@ export const Admin: React.FC = () => {
                 <div className="space-y-4">
                   {activeTab === 'events' && (
                     <>
-                      <input type="date" value={formData.date || ''} onChange={e => setFormData({...formData, date: e.target.value})} className="w-full px-4 py-3 rounded-lg border border-stone-300 focus:ring-2 focus:ring-nobel-gold outline-none" />
-                      <textarea value={formData.text || ''} onChange={e => setFormData({...formData, text: e.target.value})} placeholder="Event Description" rows={4} className="w-full px-4 py-3 rounded-lg border border-stone-300 focus:ring-2 focus:ring-nobel-gold outline-none resize-none" />
+                      <input type="date" aria-label="Event Date" value={formData.date || ''} onChange={e => setFormData({...formData, date: e.target.value})} className="w-full px-4 py-3 rounded-lg border border-stone-300 focus:ring-2 focus:ring-nobel-gold outline-none" />
+                      <textarea aria-label="Event Description" value={formData.text || ''} onChange={e => setFormData({...formData, text: e.target.value})} placeholder="Event Description" rows={4} className="w-full px-4 py-3 rounded-lg border border-stone-300 focus:ring-2 focus:ring-nobel-gold outline-none resize-none" />
                       <div className="flex flex-col sm:flex-row gap-4 sm:items-center">
-                        <input type="text" value={formData.img || ''} onChange={e => setFormData({...formData, img: e.target.value})} placeholder="Image URL (optional)" className="w-full sm:flex-1 px-4 py-3 rounded-lg border border-stone-300 focus:ring-2 focus:ring-nobel-gold outline-none" />
+                        <input type="text" aria-label="Image URL" value={formData.img || ''} onChange={e => setFormData({...formData, img: e.target.value})} placeholder="Image URL (optional)" className="w-full sm:flex-1 px-4 py-3 rounded-lg border border-stone-300 focus:ring-2 focus:ring-nobel-gold outline-none" />
                         <span className="text-stone-500 hidden sm:inline">OR</span>
-                        <label className="cursor-pointer text-center px-4 py-3 bg-stone-100 text-stone-700 rounded-lg hover:bg-stone-200 transition-colors font-medium whitespace-nowrap w-full sm:w-auto">
+                        <label className="cursor-pointer text-center px-4 py-3 bg-stone-100 text-stone-700 rounded-lg hover:bg-stone-200 transition-colors font-medium whitespace-nowrap w-full sm:w-auto focus-within:ring-2 focus-within:ring-nobel-gold focus-within:ring-offset-2">
                           {uploading ? 'Uploading...' : 'Upload Image'}
-                          <input type="file" accept="image/*" className="hidden" onChange={e => handleImageUpload(e, 'img')} disabled={uploading} />
+                          <input type="file" accept="image/*" className="sr-only" onChange={e => handleImageUpload(e, 'img')} disabled={uploading} />
                         </label>
                       </div>
                       {formData.img && <img src={formData.img} alt="Preview" className="h-32 object-cover rounded-lg border border-stone-200" referrerPolicy="no-referrer" />}
@@ -452,15 +501,15 @@ export const Admin: React.FC = () => {
                   )}
                   {activeTab === 'testimonies' && (
                     <>
-                      <input type="text" value={formData.title || ''} onChange={e => setFormData({...formData, title: e.target.value})} placeholder="Testimony Title" className="w-full px-4 py-3 rounded-lg border border-stone-300 focus:ring-2 focus:ring-nobel-gold outline-none" />
-                      <input type="text" value={formData.name || ''} onChange={e => setFormData({...formData, name: e.target.value})} placeholder="Person's Name" className="w-full px-4 py-3 rounded-lg border border-stone-300 focus:ring-2 focus:ring-nobel-gold outline-none" />
-                      <textarea value={formData.text || ''} onChange={e => setFormData({...formData, text: e.target.value})} placeholder="Testimony Text" rows={4} className="w-full px-4 py-3 rounded-lg border border-stone-300 focus:ring-2 focus:ring-nobel-gold outline-none resize-none" />
+                      <input type="text" aria-label="Testimony Title" value={formData.title || ''} onChange={e => setFormData({...formData, title: e.target.value})} placeholder="Testimony Title" className="w-full px-4 py-3 rounded-lg border border-stone-300 focus:ring-2 focus:ring-nobel-gold outline-none" />
+                      <input type="text" aria-label="Person's Name" value={formData.name || ''} onChange={e => setFormData({...formData, name: e.target.value})} placeholder="Person's Name" className="w-full px-4 py-3 rounded-lg border border-stone-300 focus:ring-2 focus:ring-nobel-gold outline-none" />
+                      <textarea aria-label="Testimony Text" value={formData.text || ''} onChange={e => setFormData({...formData, text: e.target.value})} placeholder="Testimony Text" rows={4} className="w-full px-4 py-3 rounded-lg border border-stone-300 focus:ring-2 focus:ring-nobel-gold outline-none resize-none" />
                       <div className="flex flex-col sm:flex-row gap-4 sm:items-center">
-                        <input type="text" value={formData.img || ''} onChange={e => setFormData({...formData, img: e.target.value})} placeholder="Image URL (optional)" className="w-full sm:flex-1 px-4 py-3 rounded-lg border border-stone-300 focus:ring-2 focus:ring-nobel-gold outline-none" />
+                        <input type="text" aria-label="Image URL" value={formData.img || ''} onChange={e => setFormData({...formData, img: e.target.value})} placeholder="Image URL (optional)" className="w-full sm:flex-1 px-4 py-3 rounded-lg border border-stone-300 focus:ring-2 focus:ring-nobel-gold outline-none" />
                         <span className="text-stone-500 hidden sm:inline">OR</span>
-                        <label className="cursor-pointer text-center px-4 py-3 bg-stone-100 text-stone-700 rounded-lg hover:bg-stone-200 transition-colors font-medium whitespace-nowrap w-full sm:w-auto">
+                        <label className="cursor-pointer text-center px-4 py-3 bg-stone-100 text-stone-700 rounded-lg hover:bg-stone-200 transition-colors font-medium whitespace-nowrap w-full sm:w-auto focus-within:ring-2 focus-within:ring-nobel-gold focus-within:ring-offset-2">
                           {uploading ? 'Uploading...' : 'Upload Image'}
-                          <input type="file" accept="image/*" className="hidden" onChange={e => handleImageUpload(e, 'img')} disabled={uploading} />
+                          <input type="file" accept="image/*" className="sr-only" onChange={e => handleImageUpload(e, 'img')} disabled={uploading} />
                         </label>
                       </div>
                       {formData.img && <img src={formData.img} alt="Preview" className="h-32 object-cover rounded-lg border border-stone-200" referrerPolicy="no-referrer" />}
@@ -468,36 +517,36 @@ export const Admin: React.FC = () => {
                   )}
                   {activeTab === 'gallery' && (
                     <>
-                      <select value={formData.type || 'image'} onChange={e => setFormData({...formData, type: e.target.value})} className="w-full px-4 py-3 rounded-lg border border-stone-300 focus:ring-2 focus:ring-nobel-gold outline-none bg-white">
+                      <select aria-label="Media Type" value={formData.type || 'image'} onChange={e => setFormData({...formData, type: e.target.value})} className="w-full px-4 py-3 rounded-lg border border-stone-300 focus:ring-2 focus:ring-nobel-gold outline-none bg-white">
                         <option value="image">Image</option>
                         <option value="video">Video</option>
                       </select>
                       <div className="flex flex-col sm:flex-row gap-4 sm:items-center">
-                        <input type="text" value={formData.url || ''} onChange={e => setFormData({...formData, url: e.target.value})} placeholder="Media URL" className="w-full sm:flex-1 px-4 py-3 rounded-lg border border-stone-300 focus:ring-2 focus:ring-nobel-gold outline-none" />
+                        <input type="text" aria-label="Media URL" value={formData.url || ''} onChange={e => setFormData({...formData, url: e.target.value})} placeholder="Media URL" className="w-full sm:flex-1 px-4 py-3 rounded-lg border border-stone-300 focus:ring-2 focus:ring-nobel-gold outline-none" />
                         {formData.type === 'image' && (
                           <>
                             <span className="text-stone-500 hidden sm:inline">OR</span>
-                            <label className="cursor-pointer text-center px-4 py-3 bg-stone-100 text-stone-700 rounded-lg hover:bg-stone-200 transition-colors font-medium whitespace-nowrap w-full sm:w-auto">
+                            <label className="cursor-pointer text-center px-4 py-3 bg-stone-100 text-stone-700 rounded-lg hover:bg-stone-200 transition-colors font-medium whitespace-nowrap w-full sm:w-auto focus-within:ring-2 focus-within:ring-nobel-gold focus-within:ring-offset-2">
                               {uploading ? 'Uploading...' : 'Upload Image'}
-                              <input type="file" accept="image/*" className="hidden" onChange={e => handleImageUpload(e, 'url')} disabled={uploading} />
+                              <input type="file" accept="image/*" className="sr-only" onChange={e => handleImageUpload(e, 'url')} disabled={uploading} />
                             </label>
                           </>
                         )}
                       </div>
                       {formData.url && formData.type === 'image' && <img src={formData.url} alt="Preview" className="h-32 object-cover rounded-lg border border-stone-200" referrerPolicy="no-referrer" />}
                       {formData.url && formData.type === 'video' && getYouTubeId(formData.url) && (
-                        <iframe src={`https://www.youtube.com/embed/${getYouTubeId(formData.url)}`} className="h-32 rounded-lg border border-stone-200" allowFullScreen></iframe>
+                        <iframe src={`https://www.youtube.com/embed/${getYouTubeId(formData.url)}`} className="h-32 rounded-lg border border-stone-200" allowFullScreen title="Video preview"></iframe>
                       )}
                       {formData.url && formData.type === 'video' && !getYouTubeId(formData.url) && (
-                        <video src={formData.url} controls className="h-32 rounded-lg border border-stone-200" />
+                        <video src={formData.url} controls className="h-32 rounded-lg border border-stone-200" title="Video preview" />
                       )}
-                      <input type="text" value={formData.description || ''} onChange={e => setFormData({...formData, description: e.target.value})} placeholder="Description" className="w-full px-4 py-3 rounded-lg border border-stone-300 focus:ring-2 focus:ring-nobel-gold outline-none" />
+                      <input type="text" aria-label="Description" value={formData.description || ''} onChange={e => setFormData({...formData, description: e.target.value})} placeholder="Description" className="w-full px-4 py-3 rounded-lg border border-stone-300 focus:ring-2 focus:ring-nobel-gold outline-none" />
                     </>
                   )}
                   
                   <div className="flex gap-4 pt-4">
-                    <button onClick={handleSaveItem} className="px-6 py-2 bg-nobel-gold text-white rounded-lg hover:bg-red-700 transition-colors font-medium">Save</button>
-                    <button onClick={handleCancelEdit} className="px-6 py-2 bg-stone-200 text-stone-700 rounded-lg hover:bg-stone-300 transition-colors font-medium">Cancel</button>
+                    <button onClick={handleSaveItem} className="px-6 py-2 bg-nobel-gold text-white rounded-lg hover:bg-red-700 transition-colors font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-nobel-gold focus-visible:ring-offset-2">Save</button>
+                    <button onClick={handleCancelEdit} className="px-6 py-2 bg-stone-200 text-stone-700 rounded-lg hover:bg-stone-300 transition-colors font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-400 focus-visible:ring-offset-2">Cancel</button>
                   </div>
                 </div>
               </div>
@@ -506,8 +555,8 @@ export const Admin: React.FC = () => {
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="border-b border-stone-200">
-                      <th className="py-4 px-6 font-medium text-stone-500 uppercase tracking-wider text-sm">Details</th>
-                      <th className="py-4 px-6 font-medium text-stone-500 uppercase tracking-wider text-sm w-32">Actions</th>
+                      <th className="py-4 px-6 font-medium text-stone-600 uppercase tracking-wider text-sm">Details</th>
+                      <th className="py-4 px-6 font-medium text-stone-600 uppercase tracking-wider text-sm w-32">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -538,13 +587,13 @@ export const Admin: React.FC = () => {
                           {deletingId === item.id ? (
                             <div className="flex gap-3 items-center">
                               <span className="text-xs text-stone-500 font-medium">Sure?</span>
-                              <button onClick={() => handleDeleteItem(item.id, activeTab)} className="text-sm text-red-600 hover:underline font-bold">Yes</button>
-                              <button onClick={() => setDeletingId(null)} className="text-sm text-stone-600 hover:underline">No</button>
+                              <button onClick={() => handleDeleteItem(item.id, activeTab)} className="text-sm text-red-600 hover:underline font-bold focus:outline-none focus-visible:ring-2 focus-visible:ring-red-600 rounded px-1">Yes</button>
+                              <button onClick={() => setDeletingId(null)} className="text-sm text-stone-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-600 rounded px-1">No</button>
                             </div>
                           ) : (
                             <div className="flex gap-3">
-                              <button onClick={() => handleEdit(item)} className="text-sm text-blue-600 hover:underline font-medium">Edit</button>
-                              <button onClick={() => setDeletingId(item.id)} className="text-sm text-red-600 hover:underline font-medium">Delete</button>
+                              <button onClick={() => handleEdit(item)} className="text-sm text-blue-600 hover:underline font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 rounded px-1">Edit</button>
+                              <button onClick={() => setDeletingId(item.id)} className="text-sm text-red-600 hover:underline font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-red-600 rounded px-1">Delete</button>
                             </div>
                           )}
                         </td>
@@ -552,7 +601,7 @@ export const Admin: React.FC = () => {
                     ))}
                     {(activeTab === 'events' ? events : activeTab === 'testimonies' ? testimonies : gallery).length === 0 && (
                       <tr>
-                        <td colSpan={2} className="py-8 text-center text-stone-500">No items found.</td>
+                        <td colSpan={2} className="py-8 text-center text-stone-600">No items found.</td>
                       </tr>
                     )}
                   </tbody>

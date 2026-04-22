@@ -10,6 +10,7 @@ import { Testimonies } from './pages/Testimonies';
 import { Gallery } from './pages/Gallery';
 import { Contact } from './pages/Contact';
 import { Admin } from './pages/Admin';
+import { NotFound } from './pages/NotFound';
 
 const App: React.FC = () => {
   return (
@@ -25,6 +26,7 @@ const App: React.FC = () => {
             <Route path="gallery" element={<Gallery />} />
             <Route path="contact" element={<Contact />} />
             <Route path="admin" element={<Admin />} />
+            <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>
       </BrowserRouter>

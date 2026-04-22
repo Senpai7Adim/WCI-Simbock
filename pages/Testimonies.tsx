@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 import { db } from '../firebase';
-import { X, Facebook, Twitter, Link as LinkIcon, Check } from 'lucide-react';
+import { X, Facebook, Twitter, Link as LinkIcon, Check, Loader2 } from 'lucide-react';
 
 export const Testimonies: React.FC = () => {
   const [testimonies, setTestimonies] = useState<any[]>([]);
@@ -32,15 +32,33 @@ export const Testimonies: React.FC = () => {
     fetchTestimonies();
   }, []);
 
-  if (loading) return <div className="pt-32 text-center">Loading testimonies...</div>;
+  if (loading) {
+    return (
+      <div className="pt-32 pb-24 flex flex-col items-center justify-center min-h-[60vh]">
+        <Loader2 className="w-12 h-12 text-nobel-gold animate-spin mb-4" />
+        <p className="text-stone-500 text-lg">Loading testimonies...</p>
+      </div>
+    );
+  }
 
   const shareUrl = window.location.href;
 
   return (
     <div className="pt-32 pb-24 container mx-auto px-6">
       <Helmet>
-        <title>Testimonies & Miracles | WCI Simbock Yaoundé</title>
-        <meta name="description" content="Read powerful testimonies and miracles from the members of Winners Chapel International Simbock. See what God is doing in our church." />
+        {selectedTestimony ? (
+          <>
+            <title>{`${selectedTestimony.title || 'Testimony'} by ${selectedTestimony.name || 'a member'} | WCI Simbock`}</title>
+            <meta name="description" content={selectedTestimony.text ? `${selectedTestimony.text.substring(0, 150)}...` : "Read this powerful testimony from a member of Winners Chapel International Simbock."} />
+            <meta name="keywords" content="testimony, miracle, WCI Simbock, Winners Chapel, faith, healing, breakthrough" />
+          </>
+        ) : (
+          <>
+            <title>Testimonies & Miracles | WCI Simbock Yaoundé</title>
+            <meta name="description" content="Read powerful testimonies and miracles from the members of Winners Chapel International Simbock. See what God is doing in our church." />
+            <meta name="keywords" content="testimonies, miracles, church, Winners Chapel, Yaoundé, WCI Simbock, faith" />
+          </>
+        )}
         <link rel="canonical" href="https://wcsimbock.org/testimonies" />
       </Helmet>
 
@@ -54,8 +72,16 @@ export const Testimonies: React.FC = () => {
         {testimonies.map(testimony => (
           <div 
             key={testimony.id} 
-            className="bg-white p-8 rounded-2xl shadow-sm border border-stone-100 flex flex-col items-center text-center cursor-pointer hover:shadow-md transition-shadow"
+            role="button"
+            tabIndex={0}
+            className="bg-white p-8 rounded-2xl shadow-sm border border-stone-100 flex flex-col items-center text-center cursor-pointer hover:shadow-md transition-shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-nobel-gold focus-visible:ring-offset-2"
             onClick={() => setSelectedTestimony(testimony)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                setSelectedTestimony(testimony);
+              }
+            }}
           >
             {testimony.img && (
               <img src={testimony.img} alt={testimony.name || "Testimony"} className="w-24 h-24 rounded-full object-cover mb-6 border-2 border-nobel-gold" referrerPolicy="no-referrer" loading="lazy" />
@@ -90,10 +116,11 @@ export const Testimonies: React.FC = () => {
             onClick={e => e.stopPropagation()}
           >
             <button 
-              className="absolute top-4 right-4 z-10 p-2 bg-black/5 hover:bg-black/10 text-stone-600 rounded-full transition-colors"
+              className="absolute top-4 right-4 z-10 p-2 bg-black/5 hover:bg-black/10 text-stone-600 rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-600"
               onClick={() => setSelectedTestimony(null)}
+              aria-label="Close modal"
             >
-              <X size={24} />
+              <X size={24} aria-hidden="true" />
             </button>
             
             <div className="overflow-y-auto flex-1 p-8 md:p-12 flex flex-col items-center text-center">
@@ -126,26 +153,29 @@ export const Testimonies: React.FC = () => {
                     href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="p-2 bg-stone-100 text-stone-600 rounded-full hover:bg-blue-600 hover:text-white transition-colors"
+                    className="p-2 bg-stone-100 text-stone-600 rounded-full hover:bg-blue-600 hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2"
                     title="Share on Facebook"
+                    aria-label="Share on Facebook"
                   >
-                    <Facebook size={20} />
+                    <Facebook size={20} aria-hidden="true" />
                   </a>
                   <a 
                     href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(`Read this powerful testimony: ${selectedTestimony.title || selectedTestimony.text.substring(0, 50)}...`)}`} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="p-2 bg-stone-100 text-stone-600 rounded-full hover:bg-sky-500 hover:text-white transition-colors"
+                    className="p-2 bg-stone-100 text-stone-600 rounded-full hover:bg-sky-500 hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2"
                     title="Share on Twitter"
+                    aria-label="Share on Twitter"
                   >
-                    <Twitter size={20} />
+                    <Twitter size={20} aria-hidden="true" />
                   </a>
                   <button 
                     onClick={handleCopyLink}
-                    className="p-2 bg-stone-100 text-stone-600 rounded-full hover:bg-stone-200 hover:text-stone-900 transition-colors"
+                    className="p-2 bg-stone-100 text-stone-600 rounded-full hover:bg-stone-200 hover:text-stone-900 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-900 focus-visible:ring-offset-2"
                     title="Copy Link"
+                    aria-label="Copy link to clipboard"
                   >
-                    {copied ? <Check size={20} className="text-green-600" /> : <LinkIcon size={20} />}
+                    {copied ? <Check size={20} className="text-green-600" aria-hidden="true" /> : <LinkIcon size={20} aria-hidden="true" />}
                   </button>
                 </div>
               </div>

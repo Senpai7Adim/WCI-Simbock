@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 import { db } from '../firebase';
+import { Loader2 } from 'lucide-react';
 
 const getYouTubeId = (url: string) => {
   if (!url) return null;
@@ -25,10 +27,29 @@ export const Gallery: React.FC = () => {
     fetchGallery();
   }, []);
 
-  if (loading) return <div className="pt-32 text-center">Loading gallery...</div>;
+  if (loading) {
+    return (
+      <div className="pt-32 pb-24 flex flex-col items-center justify-center min-h-[60vh]">
+        <Loader2 className="w-12 h-12 text-nobel-gold animate-spin mb-4" />
+        <p className="text-stone-500 text-lg">Loading gallery...</p>
+      </div>
+    );
+  }
+
+  // Generate dynamic description based on gallery content
+  const dynamicDescription = items.length > 0 
+    ? `View our latest gallery items including: ${items.slice(0, 3).map(i => i.description).filter(Boolean).join(', ')}...`
+    : "Explore the photo and video gallery of Winners Chapel International Simbock. See our services, events, and community in action.";
 
   return (
     <div className="pt-32 pb-24 container mx-auto px-6">
+      <Helmet>
+        <title>Media Gallery | WCI Simbock Yaoundé</title>
+        <meta name="description" content={dynamicDescription} />
+        <meta name="keywords" content="gallery, photos, videos, church, Winners Chapel, Yaoundé, WCI Simbock, media" />
+        <link rel="canonical" href="https://wcsimbock.org/gallery" />
+      </Helmet>
+
       <h1 className="font-serif text-5xl mb-6 text-stone-900 text-center">Gallery</h1>
       <div className="max-w-2xl mx-auto text-center mb-16">
         <p className="text-nobel-gold font-serif text-xl mb-2">Psalm 105:1</p>

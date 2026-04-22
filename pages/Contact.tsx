@@ -51,18 +51,18 @@ export const Contact: React.FC = () => {
           <h2 className="font-serif text-3xl mb-8 text-stone-800">Send us a message</h2>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-stone-700 mb-2">Name</label>
-              <input type="text" required className="w-full px-4 py-3 rounded-lg border border-stone-300 focus:ring-2 focus:ring-nobel-gold focus:border-transparent outline-none transition-all" placeholder="Your name" />
+              <label htmlFor="name" className="block text-sm font-medium text-stone-700 mb-2">Name</label>
+              <input id="name" type="text" required className="w-full px-4 py-3 rounded-lg border border-stone-300 focus:ring-2 focus:ring-nobel-gold focus:border-transparent outline-none transition-all" placeholder="Your name" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-stone-700 mb-2">Email</label>
-              <input type="email" required className="w-full px-4 py-3 rounded-lg border border-stone-300 focus:ring-2 focus:ring-nobel-gold focus:border-transparent outline-none transition-all" placeholder="your@email.com" />
+              <label htmlFor="email" className="block text-sm font-medium text-stone-700 mb-2">Email</label>
+              <input id="email" type="email" required className="w-full px-4 py-3 rounded-lg border border-stone-300 focus:ring-2 focus:ring-nobel-gold focus:border-transparent outline-none transition-all" placeholder="your@email.com" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-stone-700 mb-2">Message</label>
-              <textarea required rows={5} className="w-full px-4 py-3 rounded-lg border border-stone-300 focus:ring-2 focus:ring-nobel-gold focus:border-transparent outline-none transition-all resize-none" placeholder="How can we help you?"></textarea>
+              <label htmlFor="message" className="block text-sm font-medium text-stone-700 mb-2">Message</label>
+              <textarea id="message" required rows={5} className="w-full px-4 py-3 rounded-lg border border-stone-300 focus:ring-2 focus:ring-nobel-gold focus:border-transparent outline-none transition-all resize-none" placeholder="How can we help you?"></textarea>
             </div>
-            <button type="submit" className="w-full py-4 bg-stone-900 text-white rounded-lg hover:bg-stone-800 transition-colors font-medium tracking-wide">
+            <button type="submit" className="w-full py-4 bg-stone-900 text-white rounded-lg hover:bg-stone-800 transition-colors font-medium tracking-wide focus:outline-none focus-visible:ring-2 focus-visible:ring-nobel-gold focus-visible:ring-offset-2">
               Send Message
             </button>
           </form>
@@ -115,10 +115,11 @@ export const Contact: React.FC = () => {
                       <span className="font-mono text-nobel-gold font-medium bg-stone-50 px-3 py-1 rounded-md text-sm break-all">{method.code}</span>
                       <button 
                         onClick={() => handleCopy(method.code, index)}
-                        className="p-2 hover:bg-stone-100 rounded-lg transition-colors text-stone-500 hover:text-nobel-gold flex-shrink-0"
+                        className="p-2 hover:bg-stone-100 rounded-lg transition-colors text-stone-500 hover:text-nobel-gold flex-shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-nobel-gold"
                         title="Copy code"
+                        aria-label={`Copy ${method.name} code`}
                       >
-                        {copiedIndex === index ? <Check size={18} className="text-green-500" /> : <Copy size={18} />}
+                        {copiedIndex === index ? <Check size={18} className="text-green-500" aria-hidden="true" /> : <Copy size={18} aria-hidden="true" />}
                       </button>
                     </div>
                   </div>
@@ -131,10 +132,11 @@ export const Contact: React.FC = () => {
                       <span className="font-mono text-nobel-gold font-medium bg-stone-50 px-3 py-1 rounded-md text-sm break-all">*150*...</span>
                       <button 
                         onClick={() => handleCopy('*150*...', -1)}
-                        className="p-2 hover:bg-stone-100 rounded-lg transition-colors text-stone-500 hover:text-nobel-gold flex-shrink-0"
+                        className="p-2 hover:bg-stone-100 rounded-lg transition-colors text-stone-500 hover:text-nobel-gold flex-shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-nobel-gold"
                         title="Copy code"
+                        aria-label="Copy Orange Money code"
                       >
-                        {copiedIndex === -1 ? <Check size={18} className="text-green-500" /> : <Copy size={18} />}
+                        {copiedIndex === -1 ? <Check size={18} className="text-green-500" aria-hidden="true" /> : <Copy size={18} aria-hidden="true" />}
                       </button>
                     </div>
                   </div>
@@ -144,10 +146,11 @@ export const Contact: React.FC = () => {
                       <span className="font-mono text-nobel-gold font-medium bg-stone-50 px-3 py-1 rounded-md text-sm break-all">*126*...</span>
                       <button 
                         onClick={() => handleCopy('*126*...', -2)}
-                        className="p-2 hover:bg-stone-100 rounded-lg transition-colors text-stone-500 hover:text-nobel-gold flex-shrink-0"
+                        className="p-2 hover:bg-stone-100 rounded-lg transition-colors text-stone-500 hover:text-nobel-gold flex-shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-nobel-gold"
                         title="Copy code"
+                        aria-label="Copy Mobile Money code"
                       >
-                        {copiedIndex === -2 ? <Check size={18} className="text-green-500" /> : <Copy size={18} />}
+                        {copiedIndex === -2 ? <Check size={18} className="text-green-500" aria-hidden="true" /> : <Copy size={18} aria-hidden="true" />}
                       </button>
                     </div>
                   </div>
