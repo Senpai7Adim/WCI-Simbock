@@ -25,6 +25,9 @@ export const Admin: React.FC = () => {
   
   const [uploading, setUploading] = useState(false);
   const [dataLoading, setDataLoading] = useState(true);
+  const [savingFocus, setSavingFocus] = useState(false);
+  const [savingContact, setSavingContact] = useState(false);
+  const [savingItem, setSavingItem] = useState(false);
 
   useEffect(() => {
     if (!loading && !isAdmin) {
@@ -81,12 +84,17 @@ export const Admin: React.FC = () => {
       toast.error('Please fill in both title and description.');
       return;
     }
-    await setDoc(doc(db, 'settings', 'propheticFocus'), {
-      title: propheticFocus.title,
-      text: propheticFocus.text,
-      updatedAt: new Date().toISOString()
-    });
-    toast.success('Prophetic Focus saved successfully!');
+    setSavingFocus(true);
+    try {
+      await setDoc(doc(db, 'settings', 'propheticFocus'), {
+        title: propheticFocus.title,
+        text: propheticFocus.text,
+        updatedAt: new Date().toISOString()
+      });
+      toast.success('Prophetic Focus saved successfully!');
+    } finally {
+      setSavingFocus(false);
+    }
   };
 
   const handleSaveContact = async () => {
@@ -95,11 +103,16 @@ export const Admin: React.FC = () => {
       toast.error('Please provide at least one valid payment method with both name and code.');
       return;
     }
-    await setDoc(doc(db, 'settings', 'contactInfo'), {
-      paymentMethods: validMethods.map(m => ({ name: m.name, code: m.code })),
-      updatedAt: new Date().toISOString()
-    });
-    toast.success('Contact Info saved successfully!');
+    setSavingContact(true);
+    try {
+      await setDoc(doc(db, 'settings', 'contactInfo'), {
+        paymentMethods: validMethods.map(m => ({ name: m.name, code: m.code })),
+        updatedAt: new Date().toISOString()
+      });
+      toast.success('Contact Info saved successfully!');
+    } finally {
+      setSavingContact(false);
+    }
   };
 
   const handlePromoteUser = async (userId: string) => {
@@ -210,6 +223,7 @@ export const Admin: React.FC = () => {
 
   const handleSaveItem = async () => {
     try {
+      setSavingItem(true);
       const collectionName = activeTab;
       let dataToSave: any = {};
       
@@ -291,6 +305,8 @@ export const Admin: React.FC = () => {
     } catch (error) {
       console.error("Error saving item: ", error);
       toast.error('Error saving item. Please try again.');
+    } finally {
+      setSavingItem(false);
     }
   };
 
@@ -364,8 +380,8 @@ export const Admin: React.FC = () => {
                   rows={4}
                   className="w-full px-4 py-3 rounded-lg border border-stone-300 focus:ring-2 focus:ring-nobel-gold outline-none resize-none"
                 />
-                <button onClick={handleSaveFocus} className="px-6 py-3 bg-nobel-gold text-white rounded-lg hover:bg-red-700 transition-colors font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-nobel-gold focus-visible:ring-offset-2">
-                  Save Prophetic Focus
+                <button onClick={handleSaveFocus} disabled={savingFocus} className="px-6 py-3 bg-nobel-gold text-white rounded-lg hover:bg-red-700 transition-colors font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-nobel-gold focus-visible:ring-offset-2 flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed">
+                  {savingFocus ? <><Loader2 className="w-5 h-5 mr-2 animate-spin" /> Saving...</> : 'Save Prophetic Focus'}
                 </button>
               </div>
             </div>
@@ -418,8 +434,8 @@ export const Admin: React.FC = () => {
                   Add Method
                 </button>
                 <div className="mt-4">
-                  <button onClick={handleSaveContact} className="px-6 py-3 bg-nobel-gold text-white rounded-lg hover:bg-red-700 transition-colors font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-nobel-gold focus-visible:ring-offset-2">
-                    Save Payment Methods
+                  <button onClick={handleSaveContact} disabled={savingContact} className="px-6 py-3 bg-nobel-gold text-white rounded-lg hover:bg-red-700 transition-colors font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-nobel-gold focus-visible:ring-offset-2 flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed">
+                    {savingContact ? <><Loader2 className="w-5 h-5 mr-2 animate-spin" /> Saving...</> : 'Save Payment Methods'}
                   </button>
                 </div>
               </div>
@@ -545,7 +561,9 @@ export const Admin: React.FC = () => {
                   )}
                   
                   <div className="flex gap-4 pt-4">
-                    <button onClick={handleSaveItem} className="px-6 py-2 bg-nobel-gold text-white rounded-lg hover:bg-red-700 transition-colors font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-nobel-gold focus-visible:ring-offset-2">Save</button>
+                    <button onClick={handleSaveItem} disabled={savingItem} className="px-6 py-2 bg-nobel-gold text-white rounded-lg hover:bg-red-700 transition-colors font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-nobel-gold focus-visible:ring-offset-2 flex items-center disabled:opacity-70 disabled:cursor-not-allowed">
+                      {savingItem ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> {editingItem?.isNew ? 'Saving...' : 'Updating...'}</> : 'Save'}
+                    </button>
                     <button onClick={handleCancelEdit} className="px-6 py-2 bg-stone-200 text-stone-700 rounded-lg hover:bg-stone-300 transition-colors font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-400 focus-visible:ring-offset-2">Cancel</button>
                   </div>
                 </div>

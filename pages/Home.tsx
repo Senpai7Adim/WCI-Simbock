@@ -7,6 +7,48 @@ import { db } from '../firebase';
 import { isAfter, isBefore, isSameDay } from 'date-fns';
 import { Link } from 'react-router-dom';
 
+const PastorImage = () => {
+  const [loaded, setLoaded] = useState(false);
+  return (
+    <img 
+      src="/667864879_122195525894826511_5622559667234970482_n-removebg-preview.png" 
+      alt="Pastor Success" 
+      onLoad={() => setLoaded(true)}
+      className={`absolute bottom-0 right-0 md:right-12 h-[55vh] md:h-[85vh] object-contain object-bottom pointer-events-none z-20 transition-opacity duration-1000 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+    />
+  );
+};
+
+const ProvenImage = () => {
+  const [loaded, setLoaded] = useState(false);
+  return (
+    <div className="relative mb-8 min-h-[200px] flex items-center justify-center w-full">
+      {!loaded && <Loader2 className="w-8 h-8 text-nobel-gold animate-spin absolute z-0" />}
+      <img src="https://faithtabernacle.org.ng/old_images/proven.png" alt="Proven Strategies" onLoad={() => setLoaded(true)} referrerPolicy="no-referrer" className={`max-w-full h-auto relative z-10 transition-opacity duration-700 ${loaded ? 'opacity-100' : 'opacity-0'}`} />
+    </div>
+  );
+};
+
+const BackgroundImage = ({ img, index }: { img: string, index: number }) => {
+  const [loaded, setLoaded] = useState(false);
+  return (
+    <div className="w-full max-w-5xl mx-auto relative min-h-[300px] flex items-center justify-center">
+      {!loaded && <Loader2 className="w-10 h-10 text-nobel-gold animate-spin absolute z-0" />}
+      <img src={img} alt={`Slide ${index+1}`} className={`w-full h-auto max-h-[75vh] object-contain mx-auto rounded-xl shadow-2xl relative z-10 transition-opacity duration-700 ${loaded ? 'opacity-100' : 'opacity-0'}`} onLoad={() => setLoaded(true)} referrerPolicy="no-referrer" />
+    </div>
+  );
+};
+
+const NextEventImage = ({ src }: { src: string }) => {
+  const [loaded, setLoaded] = useState(false);
+  return (
+    <div className="md:w-1/2 h-64 md:h-auto relative bg-stone-100 flex items-center justify-center overflow-hidden w-full">
+      {!loaded && <Loader2 className="w-8 h-8 text-nobel-gold animate-spin absolute z-0" />}
+      <img src={src} alt="Event" className={`absolute inset-0 w-full h-full object-cover relative z-10 transition-opacity duration-700 ${loaded ? 'opacity-100' : 'opacity-0'}`} onLoad={() => setLoaded(true)} referrerPolicy="no-referrer" loading="lazy" />
+    </div>
+  );
+};
+
 export const Home: React.FC = () => {
   const [propheticFocus, setPropheticFocus] = useState({ title: '2026  OPEN DOORS', text: '' });
   const [nextEvent, setNextEvent] = useState<any>(null);
@@ -15,9 +57,9 @@ export const Home: React.FC = () => {
   const carouselRef = useRef<HTMLDivElement>(null);
   
   const bgImages = [
-    'https://i.imgur.com/jfO9gdy.jpeg',
     'https://faithtabernacle.org.ng/2026/april_month_.png?v=2.5',
-    'https://faithtabernacle.org.ng/2026/opendoors_.png?v=2.3'
+    'https://faithtabernacle.org.ng/2026/opendoors_.png?v=2.3',
+    'https://i.imgur.com/jfO9gdy.jpeg',
   ];
 
   useEffect(() => {
@@ -81,11 +123,7 @@ export const Home: React.FC = () => {
       {/* Hero Section */}
       <header className="relative z-0 h-screen flex items-center justify-center overflow-hidden">
         {/* Pastor Image - Same level as text, bottom right */}
-        <img 
-          src="/667864879_122195525894826511_5622559667234970482_n-removebg-preview.png" 
-          alt="Pastor Success" 
-          className="absolute bottom-0 right-0 md:right-12 h-[55vh] md:h-[85vh] object-contain object-bottom pointer-events-none z-20"
-        />
+        <PastorImage />
 
         <HeroScene />
         
@@ -97,7 +135,7 @@ export const Home: React.FC = () => {
             Welcome to <br/><span className="italic font-normal text-stone-600 text-3xl md:text-5xl block mt-4">WCI Simbock</span>
           </h1>
           <p className="max-w-2xl mx-auto text-lg md:text-xl text-stone-700 font-light leading-relaxed mb-12">
-            A place of worship, community, and spiritual growth.
+            Home Of Signs And Wonders.
           </p>
         </div>
 
@@ -131,12 +169,7 @@ export const Home: React.FC = () => {
         <div className="absolute inset-0 bg-black/40 z-0" /> {/* Optional overlay for better visibility */}
         <div className="relative z-10 container mx-auto px-6 py-24">
           <div className="flex flex-col items-center justify-center">
-            <img 
-              src="https://faithtabernacle.org.ng/old_images/proven.png" 
-              alt="Proven Strategies for Cell Growth and Replication" 
-              className="max-w-full h-auto mb-8"
-              referrerPolicy="no-referrer"
-            />
+            <ProvenImage />
             <a 
               href="https://faithtabernacle.org.ng/pdf/ProvenStrategiesforCellGrowthandReplication.pdf" 
               target="_blank" 
@@ -170,15 +203,8 @@ export const Home: React.FC = () => {
           className="flex overflow-x-auto snap-x snap-mandatory gap-8 px-6 md:px-12 pb-8 no-scrollbar" 
         >
           {bgImages.map((img, index) => (
-            <div key={index} className="snap-center shrink-0 w-full flex items-center justify-center">
-              <div className="w-full max-w-5xl mx-auto">
-                <img 
-                  src={img} 
-                  alt={`Slide ${index + 1}`} 
-                  className="w-full h-auto max-h-[75vh] object-contain mx-auto rounded-xl shadow-2xl"
-                  referrerPolicy="no-referrer"
-                />
-              </div>
+            <div key={index} className="snap-center shrink-0 w-full flex items-center justify-center px-4">
+              <BackgroundImage img={img} index={index} />
             </div>
           ))}
         </div>
@@ -196,9 +222,7 @@ export const Home: React.FC = () => {
           ) : nextEvent ? (
             <div className="max-w-4xl mx-auto bg-stone-50 rounded-2xl overflow-hidden shadow-lg flex flex-col md:flex-row text-left">
               {nextEvent.img && (
-                <div className="md:w-1/2 h-64 md:h-auto">
-                  <img src={nextEvent.img} alt="Event" className="w-full h-full object-cover" referrerPolicy="no-referrer" loading="lazy" />
-                </div>
+                <NextEventImage src={nextEvent.img} />
               )}
               <div className={`p-8 md:p-12 flex flex-col justify-center ${nextEvent.img ? 'md:w-1/2' : 'w-full'}`}>
                 <div className="text-nobel-gold font-bold tracking-widest uppercase text-sm mb-4">

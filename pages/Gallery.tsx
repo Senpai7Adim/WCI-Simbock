@@ -11,6 +11,54 @@ const getYouTubeId = (url: string) => {
   return (match && match[2].length === 11) ? match[2] : null;
 };
 
+const GalleryItem: React.FC<{ item: any }> = ({ item }) => {
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  return (
+    <div className="break-inside-avoid bg-white rounded-xl overflow-hidden shadow-sm border border-stone-100 group flex flex-col relative w-full mb-6">
+      <div className="bg-stone-50 relative overflow-hidden flex items-center justify-center w-full min-h-[16rem]">
+        {!isLoaded && (
+          <div className="absolute inset-0 flex items-center justify-center bg-stone-100 z-0">
+            <Loader2 className="w-8 h-8 text-nobel-gold animate-spin" />
+          </div>
+        )}
+        {item.type === 'image' ? (
+          <img 
+            src={item.url} 
+            alt={item.description} 
+            className={`w-full h-auto object-cover group-hover:scale-105 transition-all duration-700 relative z-10 ${isLoaded ? 'opacity-100' : 'opacity-0'}`} 
+            referrerPolicy="no-referrer"
+            onLoad={() => setIsLoaded(true)}
+          />
+        ) : getYouTubeId(item.url) ? (
+          <div className="w-full aspect-video relative z-10">
+            <iframe
+              src={`https://www.youtube.com/embed/${getYouTubeId(item.url)}`}
+              title={item.description || "YouTube video"}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
+              onLoad={() => setIsLoaded(true)}
+            ></iframe>
+          </div>
+        ) : (
+          <video 
+            src={item.url} 
+            controls 
+            className={`w-full h-auto bg-black relative z-10 transition-opacity duration-700 ${isLoaded ? 'opacity-100' : 'opacity-0'}`} 
+            onLoadedData={() => setIsLoaded(true)}
+          />
+        )}
+      </div>
+      {item.description && (
+        <div className="p-4 bg-white text-center border-t border-stone-50 relative z-20 w-full">
+          <p className="text-sm text-stone-600 break-words line-clamp-2">{item.description}</p>
+        </div>
+      )}
+    </div>
+  );
+};
+
 export const Gallery: React.FC = () => {
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -56,28 +104,9 @@ export const Gallery: React.FC = () => {
         <p className="text-stone-600 italic">"Give praise to the Lord, proclaim his name; make known among the nations what he has done."</p>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
         {items.map(item => (
-          <div key={item.id} className="bg-white rounded-xl overflow-hidden shadow-sm border border-stone-100 group flex flex-col">
-            <div className="h-80 bg-stone-50 relative overflow-hidden flex items-center justify-center p-2">
-              {item.type === 'image' ? (
-                <img src={item.url} alt={item.description} className="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform duration-500" referrerPolicy="no-referrer" />
-              ) : getYouTubeId(item.url) ? (
-                <iframe
-                  src={`https://www.youtube.com/embed/${getYouTubeId(item.url)}`}
-                  title={item.description || "YouTube video"}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  className="w-full h-full"
-                ></iframe>
-              ) : (
-                <video src={item.url} controls className="max-w-full max-h-full object-contain" />
-              )}
-            </div>
-            <div className="p-4 text-center mt-auto border-t border-stone-50">
-              <p className="text-sm text-stone-600 truncate">{item.description}</p>
-            </div>
-          </div>
+          <GalleryItem key={item.id} item={item} />
         ))}
       </div>
 

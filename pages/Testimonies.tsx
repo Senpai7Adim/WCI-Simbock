@@ -4,6 +4,23 @@ import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 import { db } from '../firebase';
 import { X, Facebook, Twitter, Link as LinkIcon, Check, Loader2 } from 'lucide-react';
 
+const TestimonyImage = ({ src, alt, className }: { src: string, alt: string, className?: string }) => {
+  const [loaded, setLoaded] = useState(false);
+  return (
+    <div className={`relative flex items-center justify-center shrink-0 overflow-hidden ${className}`}>
+      {!loaded && <Loader2 className="w-1/3 h-1/3 text-nobel-gold animate-spin absolute z-0" />}
+      <img 
+        src={src} 
+        alt={alt} 
+        className={`w-full h-full object-cover rounded-full relative z-10 transition-opacity duration-700 ${loaded ? 'opacity-100' : 'opacity-0'}`} 
+        onLoad={() => setLoaded(true)} 
+        referrerPolicy="no-referrer" 
+        loading="lazy" 
+      />
+    </div>
+  );
+};
+
 export const Testimonies: React.FC = () => {
   const [testimonies, setTestimonies] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -84,7 +101,7 @@ export const Testimonies: React.FC = () => {
             }}
           >
             {testimony.img && (
-              <img src={testimony.img} alt={testimony.name || "Testimony"} className="w-24 h-24 rounded-full object-cover mb-6 border-2 border-nobel-gold" referrerPolicy="no-referrer" loading="lazy" />
+              <TestimonyImage src={testimony.img} alt={testimony.name || "Testimony"} className="w-24 h-24 rounded-full mb-6 border-2 border-nobel-gold" />
             )}
             {testimony.title && (
               <h3 className="font-serif text-xl font-bold text-stone-900 mb-2">{testimony.title}</h3>
@@ -125,12 +142,10 @@ export const Testimonies: React.FC = () => {
             
             <div className="overflow-y-auto flex-1 p-8 md:p-12 flex flex-col items-center text-center">
               {selectedTestimony.img && (
-                <img 
+                <TestimonyImage 
                   src={selectedTestimony.img} 
                   alt={selectedTestimony.name || "Testimony"} 
-                  className="w-32 h-32 rounded-full object-cover mb-6 border-4 border-nobel-gold shadow-md" 
-                  referrerPolicy="no-referrer" 
-                  loading="lazy"
+                  className="w-32 h-32 rounded-full mb-6 border-4 border-nobel-gold shadow-md" 
                 />
               )}
               {selectedTestimony.title && (
