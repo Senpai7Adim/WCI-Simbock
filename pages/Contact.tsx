@@ -36,7 +36,8 @@ export const Contact: React.FC = () => {
       <Helmet>
         <title>Contact Us | WCI Simbock Yaoundé</title>
         <meta name="description" content="Get in touch with Winners Chapel International Simbock. Find our address in Yaoundé, contact details, and give offerings securely." />
-        <link rel="canonical" href="https://wcsimbock.org/contact" />
+        <link rel="canonical" href="https://wci-simbock.vercel.app/
+contact" />
       </Helmet>
 
       <h1 className="font-serif text-5xl mb-6 text-stone-900 text-center">Contact Us</h1>
@@ -44,7 +45,7 @@ export const Contact: React.FC = () => {
         <p className="text-nobel-gold font-serif text-xl mb-2">Jeremiah 33:3</p>
         <p className="text-stone-600 italic">"Call to me and I will answer you and tell you great and unsearchable things you do not know."</p>
       </div>
-      
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
         {/* Contact Form */}
         <div className="bg-white p-10 rounded-2xl shadow-sm border border-stone-100">
@@ -77,7 +78,7 @@ export const Contact: React.FC = () => {
                 <MapPin className="text-nobel-gold mt-1 flex-shrink-0" />
                 <div>
                   <h3 className="font-bold text-stone-900">Address</h3>
-                  <p>XG28+XJX, Simbock<br/>Yaoundé</p>
+                  <p>XG28+XJX, Simbock<br />Yaoundé</p>
                 </div>
               </div>
               <div className="flex items-start gap-4">
@@ -105,7 +106,7 @@ export const Contact: React.FC = () => {
             <p className="text-stone-600 mb-6">
               Your generous giving supports the ministry and our community outreach programs.
             </p>
-            
+
             <div className="space-y-4">
               {contactInfo.paymentMethods && contactInfo.paymentMethods.length > 0 ? (
                 contactInfo.paymentMethods.map((method: any, index: number) => (
@@ -113,7 +114,7 @@ export const Contact: React.FC = () => {
                     <span className="font-bold text-stone-800 break-words">{method.name}</span>
                     <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end overflow-hidden">
                       <span className="font-mono text-nobel-gold font-medium bg-stone-50 px-3 py-1 rounded-md text-sm break-all">{method.code}</span>
-                      <button 
+                      <button
                         onClick={() => handleCopy(method.code, index)}
                         className="p-2 hover:bg-stone-100 rounded-lg transition-colors text-stone-500 hover:text-nobel-gold flex-shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-nobel-gold"
                         title="Copy code"
@@ -130,7 +131,7 @@ export const Contact: React.FC = () => {
                     <span className="font-bold text-stone-800 break-words">Orange Money</span>
                     <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end overflow-hidden">
                       <span className="font-mono text-nobel-gold font-medium bg-stone-50 px-3 py-1 rounded-md text-sm break-all">*150*...</span>
-                      <button 
+                      <button
                         onClick={() => handleCopy('*150*...', -1)}
                         className="p-2 hover:bg-stone-100 rounded-lg transition-colors text-stone-500 hover:text-nobel-gold flex-shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-nobel-gold"
                         title="Copy code"
@@ -144,7 +145,7 @@ export const Contact: React.FC = () => {
                     <span className="font-bold text-stone-800 break-words">Mobile Money</span>
                     <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end overflow-hidden">
                       <span className="font-mono text-nobel-gold font-medium bg-stone-50 px-3 py-1 rounded-md text-sm break-all">*126*...</span>
-                      <button 
+                      <button
                         onClick={() => handleCopy('*126*...', -2)}
                         className="p-2 hover:bg-stone-100 rounded-lg transition-colors text-stone-500 hover:text-nobel-gold flex-shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-nobel-gold"
                         title="Copy code"

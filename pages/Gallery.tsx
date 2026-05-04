@@ -23,10 +23,10 @@ const GalleryItem: React.FC<{ item: any }> = ({ item }) => {
           </div>
         )}
         {item.type === 'image' ? (
-          <img 
-            src={item.url} 
-            alt={item.description} 
-            className={`w-full h-auto object-cover group-hover:scale-105 transition-all duration-700 relative z-10 ${isLoaded ? 'opacity-100' : 'opacity-0'}`} 
+          <img
+            src={item.url}
+            alt={item.description}
+            className={`w-full h-auto object-cover group-hover:scale-105 transition-all duration-700 relative z-10 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
             referrerPolicy="no-referrer"
             onLoad={() => setIsLoaded(true)}
           />
@@ -42,10 +42,10 @@ const GalleryItem: React.FC<{ item: any }> = ({ item }) => {
             ></iframe>
           </div>
         ) : (
-          <video 
-            src={item.url} 
-            controls 
-            className={`w-full h-auto bg-black relative z-10 transition-opacity duration-700 ${isLoaded ? 'opacity-100' : 'opacity-0'}`} 
+          <video
+            src={item.url}
+            controls
+            className={`w-full h-auto bg-black relative z-10 transition-opacity duration-700 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
             onLoadedData={() => setIsLoaded(true)}
           />
         )}
@@ -85,17 +85,22 @@ export const Gallery: React.FC = () => {
   }
 
   // Generate dynamic description based on gallery content
-  const dynamicDescription = items.length > 0 
+  const dynamicDescription = items.length > 0
     ? `View our latest gallery items including: ${items.slice(0, 3).map(i => i.description).filter(Boolean).join(', ')}...`
     : "Explore the photo and video gallery of Winners Chapel International Simbock. See our services, events, and community in action.";
 
   return (
-    <div className="pt-32 pb-24 container mx-auto px-6">
+    <main className="pt-32 pb-24 container mx-auto px-6">
       <Helmet>
         <title>Media Gallery | WCI Simbock Yaoundé</title>
         <meta name="description" content={dynamicDescription} />
         <meta name="keywords" content="gallery, photos, videos, church, Winners Chapel, Yaoundé, WCI Simbock, media" />
-        <link rel="canonical" href="https://wcsimbock.org/gallery" />
+        <link rel="canonical" href="https://wci-simbock.vercel.app/
+gallery" />
+        <meta property="og:title" content="Media Gallery | WCI Simbock Yaoundé" />
+        <meta property="og:description" content={dynamicDescription} />
+        <meta property="og:url" content="https://wci-simbock.vercel.app/
+gallery" />
       </Helmet>
 
       <h1 className="font-serif text-5xl mb-6 text-stone-900 text-center">Gallery</h1>
@@ -103,7 +108,7 @@ export const Gallery: React.FC = () => {
         <p className="text-nobel-gold font-serif text-xl mb-2">Psalm 105:1</p>
         <p className="text-stone-600 italic">"Give praise to the Lord, proclaim his name; make known among the nations what he has done."</p>
       </div>
-      
+
       <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
         {items.map(item => (
           <GalleryItem key={item.id} item={item} />
@@ -113,6 +118,6 @@ export const Gallery: React.FC = () => {
       {items.length === 0 && (
         <p className="text-center text-stone-500">No gallery items found.</p>
       )}
-    </div>
+    </main>
   );
 };

@@ -1,0 +1,22 @@
+{
+  "short_name": "WCI Simbock",
+  "name": "Winners Chapel International Simbock, Yaoundé",
+  "icons": [
+    {
+      "src": "https://faithtabernacle.org.ng/vendor/images/lfw_.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://faithtabernacle.org.ng/vendor/images/lfw_.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#ffffff",
+  "background_color": "#E3000F"
+}

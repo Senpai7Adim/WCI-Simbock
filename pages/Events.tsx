@@ -43,7 +43,7 @@ export const Events: React.FC = () => {
   }
 
   const today = new Date();
-  
+
   // Sort upcoming events ascending
   const upcomingEvents = events.filter(e => {
     const d = new Date(e.date);
@@ -52,7 +52,7 @@ export const Events: React.FC = () => {
 
   const nextEvent = upcomingEvents.length > 0 ? upcomingEvents[0] : null;
   const otherUpcomingEvents = upcomingEvents.slice(1);
-  
+
   const pastEvents = events.filter(e => {
     const d = new Date(e.date);
     return isBefore(d, today) && !isSameDay(d, today);
@@ -61,7 +61,7 @@ export const Events: React.FC = () => {
   const EventCard = ({ event, isMain = false }: { event: any, isMain?: boolean }) => {
     const hasImage = !!event.img;
     return (
-      <div 
+      <div
         role="button"
         tabIndex={0}
         className={`bg-white rounded-2xl overflow-hidden shadow-sm border border-stone-100 flex flex-col cursor-pointer hover:shadow-md transition-shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-nobel-gold focus-visible:ring-offset-2 ${isMain && hasImage ? 'md:flex-row' : ''}`}
@@ -108,7 +108,8 @@ export const Events: React.FC = () => {
             <meta name="keywords" content="events, church, Winners Chapel, Yaoundé, WCI Simbock, conferences, services" />
           </>
         )}
-        <link rel="canonical" href="https://wcsimbock.org/events" />
+        <link rel="canonical" href="https://wci-simbock.vercel.app/
+events" />
       </Helmet>
 
       <h1 className="font-serif text-5xl mb-6 text-stone-900 text-center">Events</h1>
@@ -145,7 +146,7 @@ export const Events: React.FC = () => {
           </div>
         </div>
       )}
-      
+
       {!nextEvent && pastEvents.length === 0 && (
         <p className="text-center text-stone-500">No events found.</p>
       )}
@@ -153,26 +154,26 @@ export const Events: React.FC = () => {
       {/* Event Details Modal */}
       {selectedEvent && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={() => setSelectedEvent(null)}>
-          <div 
+          <div
             className="bg-white rounded-2xl overflow-hidden shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col relative"
             onClick={e => e.stopPropagation()}
           >
-            <button 
+            <button
               className="absolute top-4 right-4 z-10 p-2 bg-black/20 hover:bg-black/40 text-white rounded-full transition-colors backdrop-blur-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
               onClick={() => setSelectedEvent(null)}
               aria-label="Close modal"
             >
               <X size={24} aria-hidden="true" />
             </button>
-            
+
             <div className="overflow-y-auto flex-1">
               {selectedEvent.img && (
                 <div className="w-full">
-                  <img 
-                    src={selectedEvent.img} 
-                    alt="Event" 
-                    className="w-full h-auto object-contain max-h-[60vh] bg-stone-100" 
-                    referrerPolicy="no-referrer" 
+                  <img
+                    src={selectedEvent.img}
+                    alt="Event"
+                    className="w-full h-auto object-contain max-h-[60vh] bg-stone-100"
+                    referrerPolicy="no-referrer"
                     loading="lazy"
                   />
                 </div>
@@ -184,12 +185,12 @@ export const Events: React.FC = () => {
                 <p className="text-stone-800 text-lg leading-relaxed whitespace-pre-wrap mb-8">
                   {selectedEvent.text}
                 </p>
-                
+
                 <div className="flex items-center gap-4 pt-6 border-t border-stone-100">
                   <span className="text-stone-500 font-medium text-sm uppercase tracking-wider">Share:</span>
-                  <a 
-                    href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`} 
-                    target="_blank" 
+                  <a
+                    href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`}
+                    target="_blank"
                     rel="noopener noreferrer"
                     className="p-2 bg-stone-100 text-stone-600 rounded-full hover:bg-blue-600 hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2"
                     title="Share on Facebook"
@@ -197,9 +198,9 @@ export const Events: React.FC = () => {
                   >
                     <Facebook size={20} aria-hidden="true" />
                   </a>
-                  <a 
-                    href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(`Check out this event: ${selectedEvent.text.substring(0, 50)}...`)}`} 
-                    target="_blank" 
+                  <a
+                    href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(`Check out this event: ${selectedEvent.text.substring(0, 50)}...`)}`}
+                    target="_blank"
                     rel="noopener noreferrer"
                     className="p-2 bg-stone-100 text-stone-600 rounded-full hover:bg-sky-500 hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2"
                     title="Share on Twitter"
@@ -207,7 +208,7 @@ export const Events: React.FC = () => {
                   >
                     <Twitter size={20} aria-hidden="true" />
                   </a>
-                  <button 
+                  <button
                     onClick={handleCopyLink}
                     className="p-2 bg-stone-100 text-stone-600 rounded-full hover:bg-stone-200 hover:text-stone-900 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-900 focus-visible:ring-offset-2"
                     title="Copy Link"

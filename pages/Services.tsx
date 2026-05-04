@@ -1,14 +1,26 @@
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
 
 export const Services: React.FC = () => {
   return (
-    <div className="pt-32 pb-24 container mx-auto px-6 max-w-5xl">
+    <main className="pt-32 pb-24 container mx-auto px-6 max-w-5xl">
+      <Helmet>
+        <title>Our Services | WCI Simbock Yaoundé</title>
+        <meta name="description" content="Join Winners Chapel International Simbock for Sunday services and Wednesday Midweek Communion Service." />
+        <meta name="keywords" content="church services, sunday worship, communion service, Winners Chapel, WCI Simbock, Yaoundé" />
+        <meta property="og:title" content="Our Services | WCI Simbock Yaoundé" />
+        <meta property="og:description" content="Join Winners Chapel International Simbock for Sunday services and Wednesday." />
+        <meta property="og:url" content="https://wci-simbock.vercel.app/
+services" />
+        <link rel="canonical" href="https://wci-simbock.vercel.app/
+services" />
+      </Helmet>
       <h1 className="font-serif text-5xl mb-6 text-stone-900 text-center">Our Services</h1>
       <div className="max-w-2xl mx-auto text-center mb-16">
         <p className="text-nobel-gold font-serif text-xl mb-2">Psalm 122:1</p>
         <p className="text-stone-600 italic">"I rejoiced with those who said to me, 'Let us go to the house of the Lord.'"</p>
       </div>
-      
+
       <div className="space-y-16">
         <div className="bg-white p-12 rounded-2xl shadow-sm border border-stone-100 flex flex-col md:flex-row gap-12 items-center">
           <div className="md:w-1/3 text-center md:text-left">
@@ -34,6 +46,6 @@ export const Services: React.FC = () => {
           </div>
         </div>
       </div>
-    </div>
+    </main>
   );
 };

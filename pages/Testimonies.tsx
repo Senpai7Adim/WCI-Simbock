@@ -9,13 +9,13 @@ const TestimonyImage = ({ src, alt, className }: { src: string, alt: string, cla
   return (
     <div className={`relative flex items-center justify-center shrink-0 overflow-hidden ${className}`}>
       {!loaded && <Loader2 className="w-1/3 h-1/3 text-nobel-gold animate-spin absolute z-0" />}
-      <img 
-        src={src} 
-        alt={alt} 
-        className={`w-full h-full object-cover rounded-full relative z-10 transition-opacity duration-700 ${loaded ? 'opacity-100' : 'opacity-0'}`} 
-        onLoad={() => setLoaded(true)} 
-        referrerPolicy="no-referrer" 
-        loading="lazy" 
+      <img
+        src={src}
+        alt={alt}
+        className={`w-full h-full object-cover rounded-full relative z-10 transition-opacity duration-700 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+        onLoad={() => setLoaded(true)}
+        referrerPolicy="no-referrer"
+        loading="lazy"
       />
     </div>
   );
@@ -61,22 +61,29 @@ export const Testimonies: React.FC = () => {
   const shareUrl = window.location.href;
 
   return (
-    <div className="pt-32 pb-24 container mx-auto px-6">
+    <main className="pt-32 pb-24 container mx-auto px-6">
       <Helmet>
         {selectedTestimony ? (
           <>
             <title>{`${selectedTestimony.title || 'Testimony'} by ${selectedTestimony.name || 'a member'} | WCI Simbock`}</title>
             <meta name="description" content={selectedTestimony.text ? `${selectedTestimony.text.substring(0, 150)}...` : "Read this powerful testimony from a member of Winners Chapel International Simbock."} />
             <meta name="keywords" content="testimony, miracle, WCI Simbock, Winners Chapel, faith, healing, breakthrough" />
+            <meta property="og:title" content={`${selectedTestimony.title || 'Testimony'} by ${selectedTestimony.name || 'a member'} | WCI Simbock`} />
+            <meta property="og:description" content={selectedTestimony.text ? `${selectedTestimony.text.substring(0, 150)}...` : "Read this powerful testimony from a member of Winners Chapel International Simbock."} />
           </>
         ) : (
           <>
             <title>Testimonies & Miracles | WCI Simbock Yaoundé</title>
             <meta name="description" content="Read powerful testimonies and miracles from the members of Winners Chapel International Simbock. See what God is doing in our church." />
             <meta name="keywords" content="testimonies, miracles, church, Winners Chapel, Yaoundé, WCI Simbock, faith" />
+            <meta property="og:title" content="Testimonies & Miracles | WCI Simbock Yaoundé" />
+            <meta property="og:description" content="Read powerful testimonies and miracles from the members of Winners Chapel International Simbock." />
           </>
         )}
-        <link rel="canonical" href="https://wcsimbock.org/testimonies" />
+        <link rel="canonical" href="https://wci-simbock.vercel.app/
+testimonies" />
+        <meta property="og:url" content="https://wci-simbock.vercel.app/
+testimonies" />
       </Helmet>
 
       <h1 className="font-serif text-5xl mb-6 text-stone-900 text-center">Testimonies</h1>
@@ -84,11 +91,11 @@ export const Testimonies: React.FC = () => {
         <p className="text-nobel-gold font-serif text-xl mb-2">Revelation 12:11</p>
         <p className="text-stone-600 italic">"They triumphed over him by the blood of the Lamb and by the word of their testimony..."</p>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {testimonies.map(testimony => (
-          <div 
-            key={testimony.id} 
+          <div
+            key={testimony.id}
             role="button"
             tabIndex={0}
             className="bg-white p-8 rounded-2xl shadow-sm border border-stone-100 flex flex-col items-center text-center cursor-pointer hover:shadow-md transition-shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-nobel-gold focus-visible:ring-offset-2"
@@ -128,24 +135,24 @@ export const Testimonies: React.FC = () => {
       {/* Testimony Details Modal */}
       {selectedTestimony && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={() => setSelectedTestimony(null)}>
-          <div 
+          <div
             className="bg-white rounded-2xl overflow-hidden shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col relative"
             onClick={e => e.stopPropagation()}
           >
-            <button 
+            <button
               className="absolute top-4 right-4 z-10 p-2 bg-black/5 hover:bg-black/10 text-stone-600 rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-600"
               onClick={() => setSelectedTestimony(null)}
               aria-label="Close modal"
             >
               <X size={24} aria-hidden="true" />
             </button>
-            
+
             <div className="overflow-y-auto flex-1 p-8 md:p-12 flex flex-col items-center text-center">
               {selectedTestimony.img && (
-                <TestimonyImage 
-                  src={selectedTestimony.img} 
-                  alt={selectedTestimony.name || "Testimony"} 
-                  className="w-32 h-32 rounded-full mb-6 border-4 border-nobel-gold shadow-md" 
+                <TestimonyImage
+                  src={selectedTestimony.img}
+                  alt={selectedTestimony.name || "Testimony"}
+                  className="w-32 h-32 rounded-full mb-6 border-4 border-nobel-gold shadow-md"
                 />
               )}
               {selectedTestimony.title && (
@@ -161,12 +168,12 @@ export const Testimonies: React.FC = () => {
                 <div className="text-sm text-stone-500 uppercase tracking-widest mb-8">
                   {new Date(selectedTestimony.createdAt).toLocaleDateString()}
                 </div>
-                
+
                 <div className="flex items-center justify-center gap-4 pt-6 border-t border-stone-100 w-full">
                   <span className="text-stone-500 font-medium text-sm uppercase tracking-wider">Share:</span>
-                  <a 
-                    href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`} 
-                    target="_blank" 
+                  <a
+                    href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`}
+                    target="_blank"
                     rel="noopener noreferrer"
                     className="p-2 bg-stone-100 text-stone-600 rounded-full hover:bg-blue-600 hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2"
                     title="Share on Facebook"
@@ -174,9 +181,9 @@ export const Testimonies: React.FC = () => {
                   >
                     <Facebook size={20} aria-hidden="true" />
                   </a>
-                  <a 
-                    href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(`Read this powerful testimony: ${selectedTestimony.title || selectedTestimony.text.substring(0, 50)}...`)}`} 
-                    target="_blank" 
+                  <a
+                    href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(`Read this powerful testimony: ${selectedTestimony.title || selectedTestimony.text.substring(0, 50)}...`)}`}
+                    target="_blank"
                     rel="noopener noreferrer"
                     className="p-2 bg-stone-100 text-stone-600 rounded-full hover:bg-sky-500 hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2"
                     title="Share on Twitter"
@@ -184,7 +191,7 @@ export const Testimonies: React.FC = () => {
                   >
                     <Twitter size={20} aria-hidden="true" />
                   </a>
-                  <button 
+                  <button
                     onClick={handleCopyLink}
                     className="p-2 bg-stone-100 text-stone-600 rounded-full hover:bg-stone-200 hover:text-stone-900 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-900 focus-visible:ring-offset-2"
                     title="Copy Link"
@@ -198,6 +205,6 @@ export const Testimonies: React.FC = () => {
           </div>
         </div>
       )}
-    </div>
+    </main>
   );
 };
