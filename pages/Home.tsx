@@ -265,7 +265,7 @@ export const Home: React.FC = () => {
                 <h3 className="font-serif text-2xl mb-4">Sunday Services</h3>
                 <p className="text-stone-400 mb-4">Join us every Sunday for a powerful time of worship and the Word.</p>
                 <div className="text-nobel-gold font-bold mb-2">1st Service: 7:00 AM - 9:15 AM</div>
-                <div className="text-nobel-gold font-bold">2nd Service: 9:30 AM - 12:00 PM</div>
+                <div className="text-nobel-gold font-bold">2nd Service: 9:30 AM - 11:30 AM</div>
               </div>
               <div className="p-8 border border-stone-700 rounded-xl hover:border-nobel-gold transition-colors">
                 <h3 className="font-serif text-2xl mb-4">Communion Service</h3>

@@ -28,7 +28,7 @@ services" />
             <div className="text-stone-500 font-bold tracking-widest uppercase text-sm">1st Service</div>
             <div className="mt-2 text-2xl text-stone-900">7:00 AM - 9:15 AM</div>
             <div className="text-stone-500 font-bold tracking-widest uppercase text-sm mt-6">2nd Service</div>
-            <div className="mt-2 text-2xl text-stone-900">9:30 AM - 12:00 PM</div>
+            <div className="mt-2 text-2xl text-stone-900">9:30 AM - 11:30 AM</div>
           </div>
           <div className="md:w-2/3 text-lg text-stone-600 leading-relaxed">
             Join us every Sunday for a powerful time of worship, fellowship, and the teaching of the Word. We offer two services to accommodate your schedule. Our Sunday services are designed to inspire, equip, and empower you for the week ahead. Children's ministry is available during the services.
