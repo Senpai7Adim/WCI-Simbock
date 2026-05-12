@@ -292,6 +292,21 @@ export const Admin: React.FC = () => {
       if (editingItem.isNew) {
         await addDoc(collection(db, collectionName), dataToSave);
         toast.success(`${collectionName.slice(0, -1)} added successfully!`);
+
+        // Notify all users by email (fire-and-forget, don't block UI)
+        if (activeTab === 'events') {
+          fetch('/api/send-event', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ date: dataToSave.date, text: dataToSave.text, img: dataToSave.img }),
+          }).catch(err => console.error('Event email error:', err));
+        } else if (activeTab === 'testimonies') {
+          fetch('/api/send-testimony', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title: dataToSave.title, name: dataToSave.name, text: dataToSave.text, img: dataToSave.img }),
+          }).catch(err => console.error('Testimony email error:', err));
+        }
       } else {
         // Use setDoc to completely overwrite the document, removing any old extraneous fields
         await setDoc(doc(db, collectionName, editingItem.id), dataToSave);

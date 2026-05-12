@@ -2,11 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
-import { MapPin, Phone, Mail, Heart, Copy, Check } from 'lucide-react';
+import { MapPin, Phone, Mail, Heart, Copy, Check, Loader2 } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 export const Contact: React.FC = () => {
   const [contactInfo, setContactInfo] = useState<any>({ paymentMethods: [] });
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
 
   useEffect(() => {
     const fetchContactInfo = async () => {
@@ -19,10 +22,30 @@ export const Contact: React.FC = () => {
     fetchContactInfo();
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Simple form submission logic
-    alert("Thank you for your message. We will get back to you soon.");
+    setIsSubmitting(true);
+    
+    try {
+      const response = await fetch('/api/send-contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        toast.success("Thank you for your message. We will get back to you soon.");
+        setFormData({ name: '', email: '', message: '' }); // Clear form
+      } else {
+        const data = await response.json();
+        throw new Error(data.error || 'Failed to send message');
+      }
+    } catch (error: any) {
+      console.error('Contact Form Error:', error);
+      toast.error(error.message || "Failed to send message. Please try again later.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleCopy = (code: string, index: number) => {
@@ -53,18 +76,53 @@ contact" />
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-stone-700 mb-2">Name</label>
-              <input id="name" type="text" required className="w-full px-4 py-3 rounded-lg border border-stone-300 focus:ring-2 focus:ring-nobel-gold focus:border-transparent outline-none transition-all" placeholder="Your name" />
+              <input 
+                id="name" 
+                type="text" 
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                required 
+                className="w-full px-4 py-3 rounded-lg border border-stone-300 focus:ring-2 focus:ring-nobel-gold focus:border-transparent outline-none transition-all" 
+                placeholder="Your name" 
+              />
             </div>
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-stone-700 mb-2">Email</label>
-              <input id="email" type="email" required className="w-full px-4 py-3 rounded-lg border border-stone-300 focus:ring-2 focus:ring-nobel-gold focus:border-transparent outline-none transition-all" placeholder="your@email.com" />
+              <input 
+                id="email" 
+                type="email" 
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                required 
+                className="w-full px-4 py-3 rounded-lg border border-stone-300 focus:ring-2 focus:ring-nobel-gold focus:border-transparent outline-none transition-all" 
+                placeholder="your@email.com" 
+              />
             </div>
             <div>
               <label htmlFor="message" className="block text-sm font-medium text-stone-700 mb-2">Message</label>
-              <textarea id="message" required rows={5} className="w-full px-4 py-3 rounded-lg border border-stone-300 focus:ring-2 focus:ring-nobel-gold focus:border-transparent outline-none transition-all resize-none" placeholder="How can we help you?"></textarea>
+              <textarea 
+                id="message" 
+                value={formData.message}
+                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                required 
+                rows={5} 
+                className="w-full px-4 py-3 rounded-lg border border-stone-300 focus:ring-2 focus:ring-nobel-gold focus:border-transparent outline-none transition-all resize-none" 
+                placeholder="How can we help you?"
+              ></textarea>
             </div>
-            <button type="submit" className="w-full py-4 bg-stone-900 text-white rounded-lg hover:bg-stone-800 transition-colors font-medium tracking-wide focus:outline-none focus-visible:ring-2 focus-visible:ring-nobel-gold focus-visible:ring-offset-2">
-              Send Message
+            <button 
+              type="submit" 
+              disabled={isSubmitting}
+              className="w-full py-4 bg-stone-900 text-white rounded-lg hover:bg-stone-800 transition-colors font-medium tracking-wide focus:outline-none focus-visible:ring-2 focus-visible:ring-nobel-gold focus-visible:ring-offset-2 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center"
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                  Sending...
+                </>
+              ) : (
+                'Send Message'
+              )}
             </button>
           </form>
         </div>

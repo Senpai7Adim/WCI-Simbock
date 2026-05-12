@@ -46,6 +46,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           role: role,
           createdAt: new Date().toISOString()
         });
+        // Send welcome email to brand new users only
+        try {
+          await fetch('/api/send-welcome', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: currentUser.email,
+              displayName: currentUser.displayName || currentUser.email?.split('@')[0],
+            }),
+          });
+        } catch (err) {
+          console.error('Failed to send welcome email:', err);
+        }
       }
       setIsAdmin(role === 'admin');
       } else {
