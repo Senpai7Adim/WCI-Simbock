@@ -28,3 +28,5 @@ functions/node_modules
 functions/lib
 functions/.env
 .env
+.vercel
+.env*.local
