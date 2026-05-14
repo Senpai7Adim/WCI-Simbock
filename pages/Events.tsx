@@ -108,7 +108,7 @@ export const Events: React.FC = () => {
             <meta name="keywords" content="events, church, Winners Chapel, Yaoundé, WCI Simbock, conferences, services" />
           </>
         )}
-        <link rel="canonical" href="https://wci-simbock.vercel.app/
+        <link rel="canonical" href="https://wci-simbock-cy77.vercel.app/
 events" />
       </Helmet>
 

@@ -1,12 +1,36 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import * as nodemailer from 'nodemailer';
+import { initializeApp, getApps, cert } from 'firebase-admin/app';
 
-const EMAIL_USER = process.env.EMAIL_USER as string;
-const EMAIL_PASS = process.env.EMAIL_PASS as string;
-const SITE_URL = 'https://wci-simbock.vercel.app';
+const EMAIL_USER = process.env.EMAIL_USER;
+const EMAIL_PASS = process.env.EMAIL_PASS;
+const FIREBASE_PROJECT_ID = process.env.FIREBASE_PROJECT_ID;
+const FIREBASE_CLIENT_EMAIL = process.env.FIREBASE_CLIENT_EMAIL;
+const FIREBASE_PRIVATE_KEY = process.env.FIREBASE_PRIVATE_KEY;
+
+const SITE_URL = 'https://wci-simbock-cy77.vercel.app';
 const LOGO_URL = 'https://faithtabernacle.org.ng/vendor/images/lfw_.png';
 const BRAND_RED = '#E3000F';
 const CHURCH_NAME = 'Winners Chapel International Simbock';
+
+export function initAdmin() {
+  if (getApps().length) return;
+
+  if (!FIREBASE_PROJECT_ID || !FIREBASE_CLIENT_EMAIL || !FIREBASE_PRIVATE_KEY) {
+    throw new Error('Missing Firebase Admin environment variables');
+  }
+
+  // Handle both literal \n and escaped \\n
+  const privateKey = FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n');
+
+  initializeApp({
+    credential: cert({
+      projectId: FIREBASE_PROJECT_ID,
+      clientEmail: FIREBASE_CLIENT_EMAIL,
+      privateKey: privateKey,
+    }),
+  });
+}
 
 function emailWrapper(content: string): string {
   return `<!DOCTYPE html>
@@ -173,6 +197,9 @@ export function contactEmailHtml(name: string, email: string, message: string): 
 }
 
 export function createTransporter() {
+  if (!EMAIL_USER || !EMAIL_PASS) {
+    throw new Error('Missing EMAIL_USER or EMAIL_PASS environment variables');
+  }
   return nodemailer.createTransport({
     service: 'gmail',
     auth: { user: EMAIL_USER, pass: EMAIL_PASS },

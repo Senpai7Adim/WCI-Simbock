@@ -10,9 +10,9 @@ export const Services: React.FC = () => {
         <meta name="keywords" content="church services, sunday worship, communion service, Winners Chapel, WCI Simbock, Yaoundé" />
         <meta property="og:title" content="Our Services | WCI Simbock Yaoundé" />
         <meta property="og:description" content="Join Winners Chapel International Simbock for Sunday services and Wednesday." />
-        <meta property="og:url" content="https://wci-simbock.vercel.app/
+        <meta property="og:url" content="https://wci-simbock-cy77.vercel.app/
 services" />
-        <link rel="canonical" href="https://wci-simbock.vercel.app/
+        <link rel="canonical" href="https://wci-simbock-cy77.vercel.app/
 services" />
       </Helmet>
       <h1 className="font-serif text-5xl mb-6 text-stone-900 text-center">Our Services</h1>

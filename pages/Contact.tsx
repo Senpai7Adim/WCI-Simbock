@@ -25,7 +25,7 @@ export const Contact: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     try {
       const response = await fetch('/api/send-contact', {
         method: 'POST',
@@ -59,7 +59,7 @@ export const Contact: React.FC = () => {
       <Helmet>
         <title>Contact Us | WCI Simbock Yaoundé</title>
         <meta name="description" content="Get in touch with Winners Chapel International Simbock. Find our address in Yaoundé, contact details, and give offerings securely." />
-        <link rel="canonical" href="https://wci-simbock.vercel.app/
+        <link rel="canonical" href="https://wci-simbock-cy77.vercel.app/
 contact" />
       </Helmet>
 
@@ -76,42 +76,42 @@ contact" />
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-stone-700 mb-2">Name</label>
-              <input 
-                id="name" 
-                type="text" 
+              <input
+                id="name"
+                type="text"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                required 
-                className="w-full px-4 py-3 rounded-lg border border-stone-300 focus:ring-2 focus:ring-nobel-gold focus:border-transparent outline-none transition-all" 
-                placeholder="Your name" 
+                required
+                className="w-full px-4 py-3 rounded-lg border border-stone-300 focus:ring-2 focus:ring-nobel-gold focus:border-transparent outline-none transition-all"
+                placeholder="Your name"
               />
             </div>
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-stone-700 mb-2">Email</label>
-              <input 
-                id="email" 
-                type="email" 
+              <input
+                id="email"
+                type="email"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                required 
-                className="w-full px-4 py-3 rounded-lg border border-stone-300 focus:ring-2 focus:ring-nobel-gold focus:border-transparent outline-none transition-all" 
-                placeholder="your@email.com" 
+                required
+                className="w-full px-4 py-3 rounded-lg border border-stone-300 focus:ring-2 focus:ring-nobel-gold focus:border-transparent outline-none transition-all"
+                placeholder="your@email.com"
               />
             </div>
             <div>
               <label htmlFor="message" className="block text-sm font-medium text-stone-700 mb-2">Message</label>
-              <textarea 
-                id="message" 
+              <textarea
+                id="message"
                 value={formData.message}
                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                required 
-                rows={5} 
-                className="w-full px-4 py-3 rounded-lg border border-stone-300 focus:ring-2 focus:ring-nobel-gold focus:border-transparent outline-none transition-all resize-none" 
+                required
+                rows={5}
+                className="w-full px-4 py-3 rounded-lg border border-stone-300 focus:ring-2 focus:ring-nobel-gold focus:border-transparent outline-none transition-all resize-none"
                 placeholder="How can we help you?"
               ></textarea>
             </div>
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               disabled={isSubmitting}
               className="w-full py-4 bg-stone-900 text-white rounded-lg hover:bg-stone-800 transition-colors font-medium tracking-wide focus:outline-none focus-visible:ring-2 focus-visible:ring-nobel-gold focus-visible:ring-offset-2 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center"
             >

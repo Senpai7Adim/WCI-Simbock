@@ -95,11 +95,11 @@ export const Gallery: React.FC = () => {
         <title>Media Gallery | WCI Simbock Yaoundé</title>
         <meta name="description" content={dynamicDescription} />
         <meta name="keywords" content="gallery, photos, videos, church, Winners Chapel, Yaoundé, WCI Simbock, media" />
-        <link rel="canonical" href="https://wci-simbock.vercel.app/
+        <link rel="canonical" href="https://wci-simbock-cy77.vercel.app/
 gallery" />
         <meta property="og:title" content="Media Gallery | WCI Simbock Yaoundé" />
         <meta property="og:description" content={dynamicDescription} />
-        <meta property="og:url" content="https://wci-simbock.vercel.app/
+        <meta property="og:url" content="https://wci-simbock-cy77.vercel.app/
 gallery" />
       </Helmet>
 
