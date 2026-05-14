@@ -1,5 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import * as nodemailer from 'nodemailer';
+import { initializeApp, getApps, cert } from 'firebase-admin/app';
 
 const EMAIL_USER = process.env.EMAIL_USER;
 const EMAIL_PASS = process.env.EMAIL_PASS;
@@ -12,15 +13,13 @@ const LOGO_URL = 'https://faithtabernacle.org.ng/vendor/images/lfw_.png';
 const BRAND_RED = '#E3000F';
 const CHURCH_NAME = 'Winners Chapel International Simbock';
 
-export async function initAdmin() {
-  const { initializeApp, getApps, cert } = await import('firebase-admin/app');
+export function initAdmin() {
   if (getApps().length) return;
 
   if (!FIREBASE_PROJECT_ID || !FIREBASE_CLIENT_EMAIL || !FIREBASE_PRIVATE_KEY) {
-    throw new Error('Missing Firebase Admin environment variables (PROJECT_ID, CLIENT_EMAIL, or PRIVATE_KEY)');
+    throw new Error('Missing Firebase Admin environment variables');
   }
 
-  // Handle both literal \n and escaped \\n
   const privateKey = FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n');
 
   initializeApp({
