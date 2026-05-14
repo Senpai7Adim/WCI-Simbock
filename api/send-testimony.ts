@@ -11,7 +11,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     // Robust initialization with logging
     try {
-      initAdmin();
+      await initAdmin();
     } catch (err: any) {
       console.error('🔥 Firebase Admin Init Error:', err.message);
       return res.status(500).json({ error: 'Configuration Error (Firebase Admin)', message: err.message });
