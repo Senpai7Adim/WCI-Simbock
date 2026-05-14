@@ -10,10 +10,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     const transporter = createTransporter();
     
-    // Send email to admin
     await transporter.sendMail({
       from: `"${CHURCH_NAME} Bot" <${EMAIL_USER}>`,
-      to: EMAIL_USER, // Send to yourself
+      to: EMAIL_USER,
       replyTo: email,
       subject: `📩 New Website Message from ${name}`,
       html: contactEmailHtml(name, email, message),
@@ -21,8 +20,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     console.log(`✅ Contact message from ${name} sent to admin.`);
     return res.status(200).json({ success: true });
-  } catch (error) {
-    console.error('Error sending contact email:', error);
-    return res.status(500).json({ error: 'Failed to send email' });
+  } catch (error: any) {
+    console.error('🔥 Contact Email Route Error:', error.message);
+    return res.status(500).json({ 
+      error: 'Failed to send contact email', 
+      message: error.message 
+    });
   }
 }

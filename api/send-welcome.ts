@@ -17,8 +17,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     });
     console.log(`✅ Welcome email sent to: ${email}`);
     return res.status(200).json({ success: true });
-  } catch (error) {
-    console.error('Error sending welcome email:', error);
-    return res.status(500).json({ error: 'Failed to send email' });
+  } catch (error: any) {
+    console.error('🔥 Welcome Email Route Error:', error.message);
+    return res.status(500).json({ 
+      error: 'Failed to send welcome email', 
+      message: error.message 
+    });
   }
 }
