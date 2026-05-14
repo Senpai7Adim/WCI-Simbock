@@ -37,8 +37,15 @@ export const Contact: React.FC = () => {
         toast.success("Thank you for your message. We will get back to you soon.");
         setFormData({ name: '', email: '', message: '' }); // Clear form
       } else {
-        const data = await response.json();
-        throw new Error(data.error || 'Failed to send message');
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          const data = await response.json();
+          throw new Error(data.error || 'Failed to send message');
+        } else {
+          const text = await response.text();
+          console.error('Server returned non-JSON error:', text);
+          throw new Error(`Server Error (${response.status}): See console for details`);
+        }
       }
     } catch (error: any) {
       console.error('Contact Form Error:', error);
