@@ -2,6 +2,9 @@
   "name": "research-visualization",
   "private": true,
   "version": "0.0.0",
+  "engines": {
+    "node": "20.x"
+  },
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -24,12 +27,16 @@
     "three": "^0.181.1",
     "firebase-admin": "^13.9.0",
     "nodemailer": "^8.0.7",
+    "express": "^4.21.0",
+    "cors": "^2.8.5",
     "@vercel/node": "^5.7.17"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",
     "@types/nodemailer": "^8.0.0",
     "@vitejs/plugin-react": "^4.3.4",
+    "@types/express": "^5.0.0",
+    "@types/cors": "^2.8.17",
     "typescript": "~5.8.2",
     "vite": "^6.2.0"
   }
