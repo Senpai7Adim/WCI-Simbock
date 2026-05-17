@@ -58,7 +58,7 @@ export const Home: React.FC = () => {
 
   const bgImages = [
     'https://faithtabernacle.org.ng/2026/april_month_.png?v=2.5',
-    'https://faithtabernacle.org.ng/2026/opendoors_.png?v=2.3',
+    'https://i.imgur.com/Pw8TDPg.png',
     'https://i.imgur.com/jfO9gdy.jpeg',
   ];
 
