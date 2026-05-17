@@ -57,8 +57,13 @@ export const Home: React.FC = () => {
   const carouselRef = useRef<HTMLDivElement>(null);
 
   const bgImages = [
+<<<<<<< HEAD
     'https://i.imgur.com/Pw8TDPg.png',
     'https://faithtabernacle.org.ng/2026/opendoors_.png?v=2.3',
+=======
+    'https://faithtabernacle.org.ng/2026/april_month_.png?v=2.5',
+    'https://i.imgur.com/Pw8TDPg.png',
+>>>>>>> 8a960ad (Replace background image in Home component)
     'https://i.imgur.com/jfO9gdy.jpeg',
   ];
 
