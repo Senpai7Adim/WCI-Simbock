@@ -11,7 +11,7 @@ import {
   contactEmailHtml,
   EMAIL_USER,
   CHURCH_NAME
-} from './emailHelpers.ts';
+} from './emailHelpers.js';
 
 const app = express();
 
@@ -61,7 +61,7 @@ app.post('/api/send-event', async (req, res) => {
 
   try {
     await initAdmin();
-    const db = getFirestore();
+    const db = getFirestore(process.env.FIREBASE_DATABASE_ID || '(default)');
     const snapshot = await db.collection('users').get();
     const emails = snapshot.docs.map(d => d.data().email as string).filter(Boolean);
 
@@ -98,7 +98,7 @@ app.post('/api/send-testimony', async (req, res) => {
 
   try {
     await initAdmin();
-    const db = getFirestore();
+    const db = getFirestore(process.env.FIREBASE_DATABASE_ID || '(default)');
     const snapshot = await db.collection('users').get();
     const emails = snapshot.docs.map(d => d.data().email as string).filter(Boolean);
 

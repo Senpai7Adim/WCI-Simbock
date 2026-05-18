@@ -48,7 +48,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         });
         // Send welcome email to brand new users only
         try {
-          await fetch('/api/send-welcome', {
+          const API_URL = import.meta.env.VITE_API_URL || '';
+          await fetch(`${API_URL}/api/send-welcome`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

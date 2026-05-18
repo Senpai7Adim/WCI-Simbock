@@ -15,32 +15,32 @@
   "dependencies": {
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.4.0",
+    "@vercel/node": "^5.7.17",
+    "cors": "^2.8.5",
     "date-fns": "^4.1.0",
+    "dotenv": "^16.6.1",
+    "express": "^4.22.2",
     "firebase": "^12.10.0",
+    "firebase-admin": "^13.9.0",
     "framer-motion": "^12.23.24",
     "lucide-react": "^0.553.0",
     "motion": "^12.38.0",
+    "nodemailer": "^8.0.7",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-helmet-async": "^3.0.0",
     "react-hot-toast": "^2.6.0",
     "react-router-dom": "^7.13.1",
-    "three": "^0.181.1",
-    "firebase-admin": "^13.9.0",
-    "nodemailer": "^8.0.7",
-    "express": "^4.21.0",
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.7",
-    "@vercel/node": "^5.7.17"
+    "three": "^0.181.1"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
     "@types/node": "^22.14.0",
     "@types/nodemailer": "^8.0.0",
     "@vitejs/plugin-react": "^4.3.4",
-    "@types/express": "^5.0.0",
-    "@types/cors": "^2.8.17",
-    "typescript": "~5.8.2",
     "tsx": "^4.19.2",
+    "typescript": "~5.8.2",
     "vite": "^6.2.0"
   }
 }
