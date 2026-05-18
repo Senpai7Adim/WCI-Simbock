@@ -9,7 +9,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "backend": "tsx Backend/index.ts"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",
@@ -29,6 +30,7 @@
     "nodemailer": "^8.0.7",
     "express": "^4.21.0",
     "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
     "@vercel/node": "^5.7.17"
   },
   "devDependencies": {
@@ -38,6 +40,7 @@
     "@types/express": "^5.0.0",
     "@types/cors": "^2.8.17",
     "typescript": "~5.8.2",
+    "tsx": "^4.19.2",
     "vite": "^6.2.0"
   }
 }
