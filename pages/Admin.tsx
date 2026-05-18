@@ -294,14 +294,15 @@ export const Admin: React.FC = () => {
         toast.success(`${collectionName.slice(0, -1)} added successfully!`);
 
         // Notify all users by email (fire-and-forget, don't block UI)
+        const API_URL = import.meta.env.VITE_API_URL || '';
         if (activeTab === 'events') {
-          fetch('/api/send-event', {
+          fetch(`${API_URL}/api/send-event`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ date: dataToSave.date, text: dataToSave.text, img: dataToSave.img }),
           }).catch(err => console.error('Event email error:', err));
         } else if (activeTab === 'testimonies') {
-          fetch('/api/send-testimony', {
+          fetch(`${API_URL}/api/send-testimony`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ title: dataToSave.title, name: dataToSave.name, text: dataToSave.text, img: dataToSave.img }),
