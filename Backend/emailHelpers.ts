@@ -8,7 +8,7 @@ const FIREBASE_PROJECT_ID = process.env.FIREBASE_PROJECT_ID;
 const FIREBASE_CLIENT_EMAIL = process.env.FIREBASE_CLIENT_EMAIL;
 const FIREBASE_PRIVATE_KEY = process.env.FIREBASE_PRIVATE_KEY;
 
-const SITE_URL = 'https://wci-simbock-cy77.vercel.app';
+const SITE_URL = 'https://wci-simbock.vercel.app';
 const LOGO_URL = 'https://faithtabernacle.org.ng/vendor/images/lfw_.png';
 const BRAND_RED = '#E3000F';
 const CHURCH_NAME = 'Winners Chapel International Simbock';

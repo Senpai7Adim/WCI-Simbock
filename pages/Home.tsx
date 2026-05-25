@@ -113,11 +113,11 @@ export const Home: React.FC = () => {
       <Helmet>
         <title>WCI Simbock | Winners Chapel International Simbock, Yaoundé</title>
         <meta name="description" content="Welcome to Winners Chapel International Simbock (WCI Simbock) in Yaoundé, Cameroon. Join us for Sunday services, communion, spiritual growth, and community impact." />
-        <link rel="canonical" href="https://wci-simbock-cy77.vercel.app/
+        <link rel="canonical" href="https://wci-simbock.vercel.app/
 " />
         <meta property="og:title" content="WCI Simbock | Winners Chapel International Simbock, Yaoundé" />
         <meta property="og:description" content="Welcome to Winners Chapel International Simbock (WCI Simbock) in Yaoundé, Cameroon. Join us for Sunday services, communion, spiritual growth, and community impact." />
-        <meta property="og:url" content="https://wci-simbock-cy77.vercel.app/
+        <meta property="og:url" content="https://wci-simbock.vercel.app/
 " />
         <meta property="og:type" content="website" />
         <meta property="twitter:card" content="summary_large_image" />

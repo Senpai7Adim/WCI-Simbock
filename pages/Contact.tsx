@@ -67,7 +67,7 @@ export const Contact: React.FC = () => {
       <Helmet>
         <title>Contact Us | WCI Simbock Yaoundé</title>
         <meta name="description" content="Get in touch with Winners Chapel International Simbock. Find our address in Yaoundé, contact details, and give offerings securely." />
-        <link rel="canonical" href="https://wci-simbock-cy77.vercel.app/
+        <link rel="canonical" href="https://wci-simbock.vercel.app/
 contact" />
       </Helmet>
 

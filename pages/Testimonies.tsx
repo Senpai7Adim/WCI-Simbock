@@ -80,9 +80,9 @@ export const Testimonies: React.FC = () => {
             <meta property="og:description" content="Read powerful testimonies and miracles from the members of Winners Chapel International Simbock." />
           </>
         )}
-        <link rel="canonical" href="https://wci-simbock-cy77.vercel.app/
+        <link rel="canonical" href="https://wci-simbock.vercel.app/
 testimonies" />
-        <meta property="og:url" content="https://wci-simbock-cy77.vercel.app/
+        <meta property="og:url" content="https://wci-simbock.vercel.app/
 testimonies" />
       </Helmet>
 
