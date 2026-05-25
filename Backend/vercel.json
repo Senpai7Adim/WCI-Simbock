@@ -1,0 +1,9 @@
+{
+  "name": "wci-simbock-backend",
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/index.ts"
+    }
+  ]
+}
