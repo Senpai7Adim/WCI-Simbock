@@ -56,7 +56,11 @@ export const Home: React.FC = () => {
   const [bgImageIndex, setBgImageIndex] = useState(0);
   const carouselRef = useRef<HTMLDivElement>(null);
 
-
+const bgImages = [
+    'https://faithtabernacle.org.ng/2026/april_month_.png?v=2.5',
+    'https://i.imgur.com/Pw8TDPg.png',
+    'https://i.imgur.com/jfO9gdy.jpeg',
+  ];
 
   useEffect(() => {
     if (carouselRef.current && carouselRef.current.children[bgImageIndex]) {
