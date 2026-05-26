@@ -30,3 +30,4 @@ functions/.env
 .env
 .vercel
 .env*.local
+.env
