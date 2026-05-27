@@ -22,6 +22,7 @@ export const Admin: React.FC = () => {
   const [editingItem, setEditingItem] = useState<any>(null);
   const [formData, setFormData] = useState<any>({});
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   
   const [uploading, setUploading] = useState(false);
   const [dataLoading, setDataLoading] = useState(true);
@@ -328,6 +329,7 @@ export const Admin: React.FC = () => {
 
   const handleDeleteItem = async (id: string, collectionName: string) => {
     try {
+      setIsDeleting(true);
       await deleteDoc(doc(db, collectionName, id));
       toast.success(`${collectionName.slice(0, -1)} deleted successfully!`);
       if (collectionName === 'events') fetchData('events', setEvents);
@@ -337,6 +339,7 @@ export const Admin: React.FC = () => {
       console.error("Error deleting item: ", error);
       toast.error('Error deleting item. Please try again.');
     } finally {
+      setIsDeleting(false);
       setDeletingId(null);
     }
   };
@@ -621,8 +624,14 @@ export const Admin: React.FC = () => {
                           {deletingId === item.id ? (
                             <div className="flex gap-3 items-center">
                               <span className="text-xs text-stone-500 font-medium">Sure?</span>
-                              <button onClick={() => handleDeleteItem(item.id, activeTab)} className="text-sm text-red-600 hover:underline font-bold focus:outline-none focus-visible:ring-2 focus-visible:ring-red-600 rounded px-1">Yes</button>
-                              <button onClick={() => setDeletingId(null)} className="text-sm text-stone-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-600 rounded px-1">No</button>
+                              {isDeleting ? (
+                                <Loader2 className="w-4 h-4 text-red-600 animate-spin" />
+                              ) : (
+                                <>
+                                  <button onClick={() => handleDeleteItem(item.id, activeTab)} className="text-sm text-red-600 hover:underline font-bold focus:outline-none focus-visible:ring-2 focus-visible:ring-red-600 rounded px-1">Yes</button>
+                                  <button onClick={() => setDeletingId(null)} className="text-sm text-stone-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-600 rounded px-1">No</button>
+                                </>
+                              )}
                             </div>
                           ) : (
                             <div className="flex gap-3">

@@ -6,6 +6,7 @@ import { collection, getDocs, query, orderBy, limit, doc, getDoc } from 'firebas
 import { db } from '../firebase';
 import { isAfter, isBefore, isSameDay } from 'date-fns';
 import { Link } from 'react-router-dom';
+import { GlobalLoader } from '../components/GlobalLoader';
 
 const PastorImage = () => {
   const [loaded, setLoaded] = useState(false);
@@ -111,6 +112,10 @@ const bgImages = [
 
     return () => clearInterval(interval);
   }, []);
+
+  if (loading) {
+    return <GlobalLoader />;
+  }
 
   return (
     <div>
@@ -224,12 +229,7 @@ const bgImages = [
         <section className="py-24 bg-white">
           <div className="container mx-auto px-6 text-center">
             <h2 className="font-serif text-4xl mb-12 text-stone-900">{nextEvent?.isPast ? 'Latest Event' : 'Next Event'}</h2>
-            {loading ? (
-              <div className="flex flex-col items-center justify-center py-12">
-                <Loader2 className="w-10 h-10 text-nobel-gold animate-spin mb-4" />
-                <p className="text-stone-500">Loading event details...</p>
-              </div>
-            ) : nextEvent ? (
+            {nextEvent ? (
               <div className="max-w-4xl mx-auto bg-stone-50 rounded-2xl overflow-hidden shadow-lg flex flex-col md:flex-row text-left">
                 {nextEvent.img && (
                   <NextEventImage src={nextEvent.img} />
