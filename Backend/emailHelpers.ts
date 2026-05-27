@@ -195,6 +195,25 @@ export function contactEmailHtml(name: string, email: string, message: string): 
   return emailWrapper(content);
 }
 
+export function announcementEmailHtml(subject: string, content: string): string {
+  const emailContent = `
+    <tr><td style="padding:48px 40px 8px;text-align:center;">
+      <div style="font-size:40px;margin-bottom:12px;">📢</div>
+      <h1 style="margin:0 0 8px;color:#1a1a1a;font-size:26px;font-weight:700;font-family:Georgia,serif;">${subject}</h1>
+      <p style="margin:0;color:${BRAND_RED};font-size:13px;letter-spacing:2px;text-transform:uppercase;font-weight:500;">Church Announcement</p>
+    </td></tr>
+    ${divider()}
+    <tr><td style="padding:32px 40px;">
+      <div style="background:#fafafa;border:1px solid #eee;border-radius:16px;overflow:hidden;padding:32px;">
+        <p style="margin:0;color:#555;font-size:16px;line-height:1.9;white-space:pre-wrap;">${content}</p>
+      </div>
+      <div style="text-align:center;margin-top:24px;">
+        ${ctaButton('Visit Our Website', SITE_URL)}
+      </div>
+    </td></tr>`;
+  return emailWrapper(emailContent);
+}
+
 export function createTransporter() {
   if (!EMAIL_USER || !EMAIL_PASS) {
     throw new Error('Missing EMAIL_USER or EMAIL_PASS environment variables');

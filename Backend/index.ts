@@ -150,6 +150,44 @@ app.post('/api/send-contact', async (req, res) => {
   }
 });
 
+// 5. Announcements
+app.post('/api/send-announcement', async (req, res) => {
+  const { subject, message } = req.body;
+  if (!subject || !message) return res.status(400).json({ error: 'Missing announcement data' });
+
+  try {
+    await initAdmin();
+    const db = getFirestore(process.env.FIREBASE_DATABASE_ID || '(default)');
+    const snapshot = await db.collection('users').get();
+    const emails = snapshot.docs.map(d => d.data().email as string).filter(Boolean);
+
+    if (emails.length === 0) return res.json({ success: true, sent: 0 });
+
+    const transporter = createTransporter();
+    const { announcementEmailHtml, EMAIL_USER, CHURCH_NAME } = await import('./emailHelpers.js');
+    const html = announcementEmailHtml(subject, message);
+    
+    // Chunking to avoid SMTP limits/timeouts
+    const chunks = [];
+    for (let i = 0; i < emails.length; i += 50) chunks.push(emails.slice(i, i + 50));
+
+    for (const chunk of chunks) {
+      await transporter.sendMail({
+        from: `"${CHURCH_NAME}" <${EMAIL_USER}>`,
+        bcc: chunk,
+        subject: `📢 ${subject} | WCI Simbock`,
+        html,
+      });
+    }
+
+    console.log(`✅ Announcement sent to ${emails.length} users.`);
+    res.json({ success: true, sent: emails.length });
+  } catch (error: any) {
+    console.error('🔥 Send Announcement Error:', error.message);
+    res.status(500).json({ error: 'Failed to send announcements', message: error.message });
+  }
+});
+
 // Standalone execution for local testing
 if (!process.env.VERCEL) {
   const PORT = process.env.PORT || 3001;

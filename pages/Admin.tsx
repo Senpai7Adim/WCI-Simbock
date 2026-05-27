@@ -15,6 +15,10 @@ export const Admin: React.FC = () => {
   const [contactInfo, setContactInfo] = useState({ paymentMethods: [{ name: '', code: '' }] });
   const [users, setUsers] = useState<any[]>([]);
   
+  const [announcementSubject, setAnnouncementSubject] = useState('');
+  const [announcementMessage, setAnnouncementMessage] = useState('');
+  const [sendingAnnouncement, setSendingAnnouncement] = useState(false);
+  
   const [events, setEvents] = useState<any[]>([]);
   const [testimonies, setTestimonies] = useState<any[]>([]);
   const [gallery, setGallery] = useState<any[]>([]);
@@ -137,6 +141,34 @@ export const Admin: React.FC = () => {
     await updateDoc(doc(db, 'users', userId), { role: 'user' });
     fetchUsers();
     toast.success('Admin demoted to user successfully!');
+  };
+
+  const handleSendAnnouncement = async () => {
+    if (!announcementSubject || !announcementMessage) {
+      toast.error('Please provide a subject and a message.');
+      return;
+    }
+
+    setSendingAnnouncement(true);
+    try {
+      const API_URL = import.meta.env.VITE_API_URL || '';
+      const response = await fetch(`${API_URL}/api/send-announcement`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ subject: announcementSubject, message: announcementMessage }),
+      });
+
+      if (!response.ok) throw new Error('Failed to send announcement');
+      const data = await response.json();
+      toast.success(`Announcement sent successfully to ${data.sent || 0} users!`);
+      setAnnouncementSubject('');
+      setAnnouncementMessage('');
+    } catch (err: any) {
+      console.error("Announcement Error: ", err);
+      toast.error("Failed to send announcement. Please try again.");
+    } finally {
+      setSendingAnnouncement(false);
+    }
   };
 
   const handleEdit = (item: any) => {
@@ -365,7 +397,7 @@ export const Admin: React.FC = () => {
       <h1 className="font-serif text-5xl mb-12 text-stone-900">Admin Dashboard</h1>
 
       <div className="flex flex-wrap gap-4 mb-12 border-b border-stone-200 pb-4">
-        {['events', 'testimonies', 'gallery', 'settings', 'users'].map(tab => (
+        {['events', 'testimonies', 'gallery', 'announcements', 'settings', 'users'].map(tab => (
           <button
             key={tab}
             onClick={() => { setActiveTab(tab); handleCancelEdit(); }}
@@ -500,6 +532,48 @@ export const Admin: React.FC = () => {
                   ))}
                 </tbody>
               </table>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'announcements' && (
+          <div>
+            <h2 className="font-serif text-3xl mb-6 text-stone-800">Send Announcement</h2>
+            <div className="bg-stone-50 p-6 sm:p-8 rounded-xl border border-stone-200">
+              <p className="text-stone-600 mb-6">
+                Broadcast a message immediately. This announcement will be emailed to all subscribed users.
+              </p>
+              <div className="space-y-4 max-w-3xl">
+                <div>
+                  <label htmlFor="announcement-subject" className="block text-sm font-medium text-stone-700 mb-2">Subject</label>
+                  <input
+                    id="announcement-subject"
+                    type="text"
+                    value={announcementSubject}
+                    onChange={e => setAnnouncementSubject(e.target.value)}
+                    placeholder="E.g., Special Upcoming Service Schedule"
+                    className="w-full px-4 py-3 rounded-lg border border-stone-300 focus:ring-2 focus:ring-nobel-gold outline-none"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="announcement-message" className="block text-sm font-medium text-stone-700 mb-2">Message</label>
+                  <textarea
+                    id="announcement-message"
+                    value={announcementMessage}
+                    onChange={e => setAnnouncementMessage(e.target.value)}
+                    placeholder="Enter the details of your announcement here..."
+                    rows={8}
+                    className="w-full px-4 py-3 rounded-lg border border-stone-300 focus:ring-2 focus:ring-nobel-gold outline-none resize-none"
+                  />
+                </div>
+                <button
+                  onClick={handleSendAnnouncement}
+                  disabled={sendingAnnouncement}
+                  className="px-6 py-3 mt-4 w-full sm:w-auto bg-nobel-gold text-white rounded-lg hover:bg-red-700 transition-colors font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-nobel-gold focus-visible:ring-offset-2 flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed"
+                >
+                  {sendingAnnouncement ? <><Loader2 className="w-5 h-5 mr-2 animate-spin" /> Sending to all users...</> : 'Review & Send Announcement'}
+                </button>
+              </div>
             </div>
           </div>
         )}
