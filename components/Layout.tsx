@@ -3,6 +3,7 @@ import { useLocation, useOutlet } from 'react-router-dom';
 import { Navbar } from './Navbar';
 import { Footer } from './Footer';
 import { AnimatePresence, motion } from 'motion/react';
+import { JoinUsPopup } from './JoinUsPopup';
 
 export const Layout: React.FC = () => {
   const location = useLocation();
@@ -25,6 +26,7 @@ export const Layout: React.FC = () => {
         </AnimatePresence>
       </main>
       <Footer />
+      <JoinUsPopup />
     </div>
   );
 };
