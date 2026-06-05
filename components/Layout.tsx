@@ -4,6 +4,7 @@ import { Navbar } from './Navbar';
 import { Footer } from './Footer';
 import { AnimatePresence, motion } from 'motion/react';
 import { JoinUsPopup } from './JoinUsPopup';
+import { WhatsAppFloatingIcon } from './WhatsAppFloatingIcon';
 
 export const Layout: React.FC = () => {
   const location = useLocation();
@@ -27,6 +28,7 @@ export const Layout: React.FC = () => {
       </main>
       <Footer />
       <JoinUsPopup />
+      <WhatsAppFloatingIcon />
     </div>
   );
 };
