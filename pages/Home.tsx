@@ -60,7 +60,7 @@ export const Home: React.FC = () => {
 const bgImages = [
     'https://faithtabernacle.org.ng/2026/opendoors_.png?v=2.3',
     'https://i.imgur.com/zpIObt3.png',
-    'https://i.imgur.com/jfO9gdy.jpeg',
+    'https://i.imgur.com/vYbuE3q.png',
   ];
 
   useEffect(() => {
