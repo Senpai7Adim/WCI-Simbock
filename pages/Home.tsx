@@ -286,7 +286,8 @@ const bgImages = [
                 <p className="text-stone-500 italic text-sm">"Trust in the Lord with all your heart and lean not on your own understanding..."</p>
               </div>
               <p className="text-lg text-stone-600 leading-relaxed mb-8">
-                We are located at the heart of the city, welcoming everyone to join our community.
+                We are located at Located in Simbock, Yaoundé, Cameroon (entrée Onana)
+                , welcoming everyone to join our community.
                 If you need counseling, prayers, or want to know more about our ministries, please don't hesitate to reach out.
               </p>
               <Link to="/contact" className="inline-block px-8 py-4 bg-nobel-gold text-white rounded-full hover:bg-red-700 transition-colors font-bold tracking-wide focus:outline-none focus-visible:ring-2 focus-visible:ring-nobel-gold focus-visible:ring-offset-2">
