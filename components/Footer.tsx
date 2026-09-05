@@ -24,6 +24,18 @@ export const Footer: React.FC = () => {
           </a>
         </div>
         
+        <div className="flex flex-wrap justify-center gap-6 text-sm">
+          <a href="/services#homecells" className="hover:text-nobel-gold transition-colors">
+            WSF Homecell Centers
+          </a>
+          <a href="/services" className="hover:text-nobel-gold transition-colors">
+            Weekly Services
+          </a>
+          <a href="/contact" className="hover:text-nobel-gold transition-colors">
+            Sanctuary Location & Offerings
+          </a>
+        </div>
+        
         <div className="text-sm">
           &copy; {new Date().getFullYear()} WCI Simbock. All rights reserved.
         </div>

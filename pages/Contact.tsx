@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
-import { MapPin, Phone, Mail, Heart, Copy, Check, Loader2 } from 'lucide-react';
+import { MapPin, Phone, Mail, Heart, Copy, Check, Loader2, Sparkles } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { HomecellDirectory } from '../components/HomecellDirectory';
+import { ChurchLocationMap } from '../components/ChurchLocationMap';
 
 export const Contact: React.FC = () => {
   const [contactInfo, setContactInfo] = useState<any>({ paymentMethods: [] });
@@ -143,8 +145,17 @@ contact" />
               <div className="flex items-start gap-4">
                 <MapPin className="text-nobel-gold mt-1 flex-shrink-0" />
                 <div>
-                  <h3 className="font-bold text-stone-900">Address</h3>
-                  <p>XG28+XJX, Simbock<br />Yaoundé</p>
+                  <h3 className="font-bold text-stone-900">Sanctuary Address</h3>
+                  <p className="text-stone-800 font-semibold">Simbock (Entrée Onana)<br />Yaoundé, Cameroon</p>
+                  <p className="text-xs text-stone-500 mt-1">Plus Code: <span className="font-mono font-medium text-stone-700">XG28+XJX, Simbock</span></p>
+                  <a 
+                    href="https://www.google.com/maps/dir/?api=1&destination=Simbock+Entree+Onana+Yaounde+Cameroun" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="inline-flex items-center gap-1.5 text-xs font-bold text-nobel-gold hover:text-red-700 transition-colors mt-2"
+                  >
+                    <span>Get Google Maps Directions &rarr;</span>
+                  </a>
                 </div>
               </div>
               <div className="flex items-start gap-4">
@@ -226,6 +237,16 @@ contact" />
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Google Maps Church Location */}
+      <div className="mt-20 pt-16 border-t border-stone-200">
+        <ChurchLocationMap />
+      </div>
+
+      {/* Winners Satellite Fellowship (WSF) Locations */}
+      <div className="mt-20 pt-16 border-t border-stone-200">
+        <HomecellDirectory />
       </div>
     </div>
   );

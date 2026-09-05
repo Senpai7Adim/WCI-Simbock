@@ -60,8 +60,13 @@ app.post('/api/send-event', async (req, res) => {
   if (!date || !text) return res.status(400).json({ error: 'Missing event data' });
 
   try {
-    await initAdmin();
-    const db = getFirestore(process.env.FIREBASE_DATABASE_ID || '(default)');
+    const hasAdmin = await initAdmin();
+    if (!hasAdmin) {
+      console.log('ℹ️ Admin credentials not set; skipping event email broadcast.');
+      return res.json({ success: true, sent: 0, note: 'Firebase Admin credentials not set; skipped broadcast.' });
+    }
+
+    const db = getFirestore(process.env.FIREBASE_DATABASE_ID || 'ai-studio-e8558fad-a857-49e6-9314-3593cef406a0');
     const snapshot = await db.collection('users').get();
     const emails = snapshot.docs.map(d => d.data().email as string).filter(Boolean);
 
@@ -97,8 +102,13 @@ app.post('/api/send-testimony', async (req, res) => {
   if (!title || !name || !text) return res.status(400).json({ error: 'Missing testimony data' });
 
   try {
-    await initAdmin();
-    const db = getFirestore(process.env.FIREBASE_DATABASE_ID || '(default)');
+    const hasAdmin = await initAdmin();
+    if (!hasAdmin) {
+      console.log('ℹ️ Admin credentials not set; skipping testimony email broadcast.');
+      return res.json({ success: true, sent: 0, note: 'Firebase Admin credentials not set; skipped broadcast.' });
+    }
+
+    const db = getFirestore(process.env.FIREBASE_DATABASE_ID || 'ai-studio-e8558fad-a857-49e6-9314-3593cef406a0');
     const snapshot = await db.collection('users').get();
     const emails = snapshot.docs.map(d => d.data().email as string).filter(Boolean);
 
@@ -135,8 +145,8 @@ app.post('/api/send-contact', async (req, res) => {
   try {
     const transporter = createTransporter();
     await transporter.sendMail({
-      from: `"${CHURCH_NAME} Bot" <${EMAIL_USER}>`,
-      to: EMAIL_USER,
+      from: `"${CHURCH_NAME} Bot" <${EMAIL_USER || 'noreply@wcisimbock.org'}>`,
+      to: EMAIL_USER || 'admin@wcisimbock.org',
       replyTo: email,
       subject: `📩 New Website Message from ${name}`,
       html: contactEmailHtml(name, email, message),
@@ -156,8 +166,13 @@ app.post('/api/send-announcement', async (req, res) => {
   if (!subject || !message) return res.status(400).json({ error: 'Missing announcement data' });
 
   try {
-    await initAdmin();
-    const db = getFirestore(process.env.FIREBASE_DATABASE_ID || '(default)');
+    const hasAdmin = await initAdmin();
+    if (!hasAdmin) {
+      console.log('ℹ️ Admin credentials not set; skipping announcement broadcast.');
+      return res.json({ success: true, sent: 0, note: 'Firebase Admin credentials not set; skipped broadcast.' });
+    }
+
+    const db = getFirestore(process.env.FIREBASE_DATABASE_ID || 'ai-studio-e8558fad-a857-49e6-9314-3593cef406a0');
     const snapshot = await db.collection('users').get();
     const emails = snapshot.docs.map(d => d.data().email as string).filter(Boolean);
 
@@ -189,7 +204,7 @@ app.post('/api/send-announcement', async (req, res) => {
 });
 
 // Standalone execution for local testing
-if (!process.env.VERCEL) {
+if (process.env.STANDALONE_BACKEND === 'true') {
   const PORT = process.env.PORT || 3001;
   app.listen(PORT, () => {
     console.log(`🚀 Backend local server running on http://localhost:${PORT}`);

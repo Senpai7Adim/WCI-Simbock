@@ -13,22 +13,33 @@ const LOGO_URL = 'https://faithtabernacle.org.ng/vendor/images/lfw_.png';
 const BRAND_RED = '#E3000F';
 const CHURCH_NAME = 'Winners Chapel International Simbock';
 
-export function initAdmin() {
-  if (getApps().length) return;
+export function initAdmin(): boolean {
+  if (getApps().length) return true;
 
-  if (!FIREBASE_PROJECT_ID || !FIREBASE_CLIENT_EMAIL || !FIREBASE_PRIVATE_KEY) {
-    throw new Error('Missing Firebase Admin environment variables');
+  const projectId = process.env.FIREBASE_PROJECT_ID || 'project-56f0e650-11ad-40ed-aff';
+  const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
+  const privateKey = process.env.FIREBASE_PRIVATE_KEY;
+
+  if (!clientEmail || !privateKey) {
+    console.warn('⚠️ Firebase Admin credentials not set (FIREBASE_CLIENT_EMAIL, FIREBASE_PRIVATE_KEY). Broadcast notifications to users list disabled until configured.');
+    return false;
   }
 
-  const privateKey = FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n');
+  const formattedKey = privateKey.replace(/\\n/g, '\n');
 
-  initializeApp({
-    credential: cert({
-      projectId: FIREBASE_PROJECT_ID,
-      clientEmail: FIREBASE_CLIENT_EMAIL,
-      privateKey: privateKey,
-    }),
-  });
+  try {
+    initializeApp({
+      credential: cert({
+        projectId,
+        clientEmail,
+        privateKey: formattedKey,
+      }),
+    });
+    return true;
+  } catch (err: any) {
+    console.error('Failed to initialize Firebase Admin:', err.message);
+    return false;
+  }
 }
 
 function emailWrapper(content: string): string {
@@ -214,13 +225,21 @@ export function announcementEmailHtml(subject: string, content: string): string 
   return emailWrapper(emailContent);
 }
 
-export function createTransporter() {
-  if (!EMAIL_USER || !EMAIL_PASS) {
-    throw new Error('Missing EMAIL_USER or EMAIL_PASS environment variables');
+export function createTransporter(): { sendMail: (mailOptions: any) => Promise<any> } {
+  const user = process.env.EMAIL_USER;
+  const pass = process.env.EMAIL_PASS;
+  if (!user || !pass) {
+    console.warn('⚠️ EMAIL_USER or EMAIL_PASS not configured. Operating in preview/mock email delivery mode.');
+    return {
+      sendMail: async (mailOptions: any) => {
+        console.log(`📨 [Preview Mock Email] To: ${mailOptions.to || (Array.isArray(mailOptions.bcc) ? mailOptions.bcc.join(', ') : mailOptions.bcc)}, Subject: "${mailOptions.subject}"`);
+        return { messageId: `mock-${Date.now()}` };
+      }
+    };
   }
   return nodemailer.createTransport({
     service: 'gmail',
-    auth: { user: EMAIL_USER, pass: EMAIL_PASS },
+    auth: { user, pass },
   });
 }
 
