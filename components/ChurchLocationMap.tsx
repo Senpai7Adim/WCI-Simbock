@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { 
-  MapPin, 
-  Navigation, 
-  ExternalLink, 
-  Copy, 
-  Check, 
-  Share2, 
-  Compass, 
-  Sparkles 
+import {
+  MapPin,
+  Navigation,
+  ExternalLink,
+  Copy,
+  Check,
+  Share2,
+  Compass,
+  Sparkles
 } from 'lucide-react';
 
 interface ChurchLocationMapProps {
@@ -20,23 +20,24 @@ export const ChurchLocationMap: React.FC<ChurchLocationMapProps> = ({
   className = '',
 }) => {
   const [copied, setCopied] = useState(false);
-  const churchName = "Winners Chapel International Simbock";
-  const churchAddress = "Simbock, Entrée Onana, Yaoundé, Cameroon";
-  const plusCode = "XG28+XJX, Simbock, Yaoundé";
+  const churchName = "Winners Chapel International (WCI) Simbock";
+  const churchAddress = "Simbock (Entrée Onana), Yaoundé, Cameroon";
+  const plusCode = "RF9C+8HF, Yaoundé";
 
-  // Google Maps URLs
-  const encodedQuery = encodeURIComponent("Simbock Entrée Onana, Yaoundé, Cameroun");
-  const googleMapsDirectionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodedQuery}`;
-  const googleMapsSearchUrl = `https://www.google.com/maps/search/?api=1&query=${encodedQuery}`;
-  
+  // Google Maps URLs and direct Google Business listing
+  const googleListingUrl = "https://www.google.com/search?q=winners+chapel+international+wci+simbock+yaound%C3%A9+adresse&ludocid=14267527970413228587";
+  const googleMapsPlaceUrl = "https://maps.google.com/?cid=14267527970413228587";
+  const encodedDestination = encodeURIComponent("RF9C+8HF, Yaoundé");
+  const googleMapsDirectionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodedDestination}`;
+
   // Maps embed URL
   const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
   const embedUrl = apiKey
-    ? `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${encodedQuery}`
-    : `https://maps.google.com/maps?q=${encodedQuery}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+    ? `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${encodedDestination}`
+    : `https://maps.google.com/maps?q=${encodedDestination}&t=&z=16&ie=UTF8&iwloc=&output=embed`;
 
   const handleCopyAddress = () => {
-    navigator.clipboard.writeText(`${churchName}, ${churchAddress}`);
+    navigator.clipboard.writeText(`${churchName}, ${plusCode}, ${churchAddress}`);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -45,7 +46,8 @@ export const ChurchLocationMap: React.FC<ChurchLocationMapProps> = ({
     const text = encodeURIComponent(
       `📍 *${churchName}*\n` +
       `Location: Simbock (Entrée Onana), Yaoundé, Cameroon\n` +
-      `Google Maps: ${googleMapsSearchUrl}`
+      `Plus Code: ${plusCode}\n` +
+      `Google Maps: ${googleMapsPlaceUrl}`
     );
     window.open(`https://wa.me/?text=${text}`, '_blank');
   };
@@ -86,7 +88,7 @@ export const ChurchLocationMap: React.FC<ChurchLocationMapProps> = ({
             </div>
             <div className="overflow-hidden">
               <p className="text-xs font-bold text-white truncate">WCI Simbock Sanctuary</p>
-              <p className="text-[11px] text-stone-300 truncate">Simbock (Entrée Onana), Yaoundé</p>
+              <p className="text-[11px] text-stone-300 truncate">RF9C+8HF, Yaoundé</p>
             </div>
           </div>
         </div>
@@ -104,11 +106,21 @@ export const ChurchLocationMap: React.FC<ChurchLocationMapProps> = ({
               </h3>
               <p className="text-stone-700 text-sm font-medium flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-nobel-gold shrink-0" />
-                <span>Simbock, Entrée Onana — Yaoundé, Cameroon</span>
+                <span>Simbock (Entrée Onana) — Yaoundé, Cameroon</span>
               </p>
-              <p className="text-stone-500 text-xs mt-1.5 pl-6">
-                Plus Code: <span className="font-mono text-stone-700 font-semibold">{plusCode}</span>
-              </p>
+              <div className="mt-2 pl-6 space-y-1">
+                <p className="text-stone-600 text-xs">
+                  Plus Code: <span className="font-mono text-stone-900 font-bold bg-stone-200/80 px-2 py-0.5 rounded">{plusCode}</span>
+                </p>
+                <a
+                  href={googleListingUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-[11px] text-nobel-gold hover:text-red-700 font-semibold transition-colors"
+                >
+                  <span>View Google Business Profile &rarr;</span>
+                </a>
+              </div>
             </div>
 
             {/* Service schedule quick reminder */}
@@ -140,7 +152,7 @@ export const ChurchLocationMap: React.FC<ChurchLocationMapProps> = ({
 
               {/* View in Google Maps */}
               <a
-                href={googleMapsSearchUrl}
+                href={googleMapsPlaceUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 px-4 py-3 bg-stone-900 hover:bg-stone-800 text-white rounded-xl text-xs font-bold transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-700"

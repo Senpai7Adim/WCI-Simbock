@@ -147,15 +147,25 @@ contact" />
                 <div>
                   <h3 className="font-bold text-stone-900">Sanctuary Address</h3>
                   <p className="text-stone-800 font-semibold">Simbock (Entrée Onana)<br />Yaoundé, Cameroon</p>
-                  <p className="text-xs text-stone-500 mt-1">Plus Code: <span className="font-mono font-medium text-stone-700">XG28+XJX, Simbock</span></p>
-                  <a 
-                    href="https://www.google.com/maps/dir/?api=1&destination=Simbock+Entree+Onana+Yaounde+Cameroun" 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className="inline-flex items-center gap-1.5 text-xs font-bold text-nobel-gold hover:text-red-700 transition-colors mt-2"
-                  >
-                    <span>Get Google Maps Directions &rarr;</span>
-                  </a>
+                  <p className="text-xs text-stone-500 mt-1">Plus Code: <span className="font-mono font-bold text-stone-800 bg-stone-200/80 px-1.5 py-0.5 rounded">RF9C+8HF, Yaoundé</span></p>
+                  <div className="flex flex-col gap-1 mt-2">
+                    <a
+                      href="https://www.google.com/maps/dir/?api=1&destination=RF9C%2B8HF%2C+Yaound%C3%A9"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-xs font-bold text-nobel-gold hover:text-red-700 transition-colors"
+                    >
+                      <span>Get Google Maps Directions &rarr;</span>
+                    </a>
+                    <a
+                      href="https://maps.google.com/?cid=14267527970413228587"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-xs text-stone-500 hover:text-stone-900 transition-colors"
+                    >
+                      <span>Open Google Maps Place Profile &rarr;</span>
+                    </a>
+                  </div>
                 </div>
               </div>
               <div className="flex items-start gap-4">
