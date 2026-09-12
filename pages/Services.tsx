@@ -249,7 +249,7 @@ export const Services: React.FC = () => {
             times={['Every Wednesday: 5:30 PM - 7:30 PM']}
             description="Deepen your spiritual foundation in our mid-week fellowship and partake in the mystery of the Holy Communion. As ordained in scripture, the flesh and the blood of Jesus Christ infuse divine vitality, shatter demonic yokes, and empower you to finish your week strong."
             scripture="John 6:54 - Whoso eateth my flesh, and drinketh my blood, hath eternal life; and I will raise him up at the last day."
-            image="public\images\1788800894816.jpg"
+            image="images/1788800894816.jpg"
             highlights={[
               'In-depth expository bible teaching & scripture breakdowns',
               'Sacrament of the Holy Communion for supernatural health and vitality',
@@ -266,7 +266,7 @@ export const Services: React.FC = () => {
             times={['Every Saturday: 5:00 PM - 6:00 PM']}
             description="Experience caring Christian family community right in your neighborhood. WSF is our grassroots home-cell network across Simbock, Mendong, and neighbouring districts of Yaoundé, providing spiritual mentorship, interactive prayer, and warm sisterhood and brotherhood."
             scripture="Acts 2:46 - And they, continuing daily with one accord in the temple, and breaking bread from house to house..."
-            image="public/images/IMG-20260907-WA0054.jpg"
+            image="/images/IMG-20260907-WA0054.jpg"
             highlights={[
               '11 active fellowship centers across Mbalgong, Michel Power, Essono City, Entrée Onana, Monte Ngok, Mario, Nomayos & Bambou de Chine',
               'Intimate, interactive neighborhood fellowship, scripture study, and prayer',
