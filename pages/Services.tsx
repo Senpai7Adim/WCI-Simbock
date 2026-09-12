@@ -2,16 +2,16 @@ import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { HomecellDirectory } from '../components/HomecellDirectory';
-import { 
-  Clock, 
-  MapPin, 
-  Sparkles, 
-  BookOpen, 
-  Flame, 
-  HeartHandshake, 
-  ShieldCheck, 
-  ChevronRight, 
-  Users, 
+import {
+  Clock,
+  MapPin,
+  Sparkles,
+  BookOpen,
+  Flame,
+  HeartHandshake,
+  ShieldCheck,
+  ChevronRight,
+  Users,
   CheckCircle2,
   Calendar,
   MessageCircleQuestion,
@@ -51,12 +51,11 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
           referrerPolicy="no-referrer"
           loading="lazy"
           onLoad={() => setImageLoaded(true)}
-          className={`w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out ${
-            imageLoaded ? 'opacity-90' : 'opacity-0'
-          }`}
+          className={`w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out ${imageLoaded ? 'opacity-90' : 'opacity-0'
+            }`}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-stone-950/80 via-stone-950/30 to-transparent lg:bg-gradient-to-r lg:from-transparent lg:via-stone-950/20 lg:to-stone-950/70 pointer-events-none" />
-        
+
         {/* Floating Tag */}
         <div className="absolute top-5 left-5 z-10">
           <span className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider shadow-sm ${badgeColor}`}>
@@ -82,7 +81,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
           {/* Time Badges */}
           <div className="flex flex-wrap gap-2 mb-6">
             {times.map((time, idx) => (
-              <div 
+              <div
                 key={idx}
                 className="inline-flex items-center gap-2 px-4 py-2 bg-stone-100 hover:bg-stone-200/80 text-stone-900 rounded-xl text-sm font-medium border border-stone-200 transition-colors"
               >
@@ -131,13 +130,13 @@ export const Services: React.FC = () => {
     <main className="pt-28 pb-24 bg-stone-50 min-h-screen">
       <Helmet>
         <title>Our Services | Winners Chapel International Simbock</title>
-        <meta 
-          name="description" 
-          content="Join Winners Chapel International Simbock (WCI Simbock), Yaoundé for Sunday celebration services, Holy Communion midweek service, and WSF house fellowship." 
+        <meta
+          name="description"
+          content="Join Winners Chapel International Simbock (WCI Simbock), Yaoundé for Sunday celebration services, Holy Communion midweek service, and WSF house fellowship."
         />
-        <meta 
-          name="keywords" 
-          content="WCI Simbock services, Winners Chapel Simbock, Bishop David Oyedepo ministry, Sunday service Yaoundé, communion service Cameroon, Living Faith Church" 
+        <meta
+          name="keywords"
+          content="WCI Simbock services, Winners Chapel Simbock, Bishop David Oyedepo ministry, Sunday service Yaoundé, communion service Cameroon, Living Faith Church"
         />
         <meta property="og:title" content="Our Services | Winners Chapel International Simbock, Yaoundé" />
         <meta property="og:description" content="Experience life-transforming Sunday worship and Wednesday Holy Communion in Simbock, Yaoundé." />
@@ -250,7 +249,7 @@ export const Services: React.FC = () => {
             times={['Every Wednesday: 5:30 PM - 7:30 PM']}
             description="Deepen your spiritual foundation in our mid-week fellowship and partake in the mystery of the Holy Communion. As ordained in scripture, the flesh and the blood of Jesus Christ infuse divine vitality, shatter demonic yokes, and empower you to finish your week strong."
             scripture="John 6:54 - Whoso eateth my flesh, and drinketh my blood, hath eternal life; and I will raise him up at the last day."
-            image="/images/holy_communion_service_1788618177522.jpg"
+            image="public\images\1788800894816.jpg"
             highlights={[
               'In-depth expository bible teaching & scripture breakdowns',
               'Sacrament of the Holy Communion for supernatural health and vitality',
@@ -267,7 +266,7 @@ export const Services: React.FC = () => {
             times={['Every Saturday: 5:00 PM - 6:00 PM']}
             description="Experience caring Christian family community right in your neighborhood. WSF is our grassroots home-cell network across Simbock, Mendong, and neighbouring districts of Yaoundé, providing spiritual mentorship, interactive prayer, and warm sisterhood and brotherhood."
             scripture="Acts 2:46 - And they, continuing daily with one accord in the temple, and breaking bread from house to house..."
-            image="/images/simbock_church_sanctuary_1788618229052.jpg"
+            image="public/images/IMG-20260907-WA0054.jpg"
             highlights={[
               '11 active fellowship centers across Mbalgong, Michel Power, Essono City, Entrée Onana, Monte Ngok, Mario, Nomayos & Bambou de Chine',
               'Intimate, interactive neighborhood fellowship, scripture study, and prayer',

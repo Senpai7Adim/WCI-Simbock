@@ -58,9 +58,9 @@ export const Home: React.FC = () => {
   const [bgImageIndex, setBgImageIndex] = useState(0);
   const carouselRef = useRef<HTMLDivElement>(null);
 
-const bgImages = [
+  const bgImages = [
     'https://faithtabernacle.org.ng/2026/opendoors_.png?v=2.3',
-    'https://i.imgur.com/WIsR4Fj.png',
+    'https://i.imgur.com/PMrZoh7.png',
     'https://i.imgur.com/vYbuE3q.png',
   ];
 
@@ -332,7 +332,7 @@ const bgImages = [
               <div className="bg-stone-800/80 rounded-3xl overflow-hidden border border-stone-700/70 hover:border-nobel-gold transition-all duration-300 flex flex-col group shadow-xl">
                 <div className="relative h-64 overflow-hidden bg-stone-950">
                   <img
-                    src="/images/holy_communion_service_1788618177522.jpg"
+                    src="public\images\1788800894816.jpg"
                     alt="Holy Communion Table Service"
                     referrerPolicy="no-referrer"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-90"
@@ -380,7 +380,7 @@ const bgImages = [
             <div className="max-w-5xl mx-auto bg-stone-950 rounded-3xl overflow-hidden border border-stone-800 shadow-2xl flex flex-col md:flex-row items-center">
               <div className="md:w-5/12 w-full h-64 md:h-80 relative overflow-hidden">
                 <img
-                  src="/images/bishop_oyedepo_preaching_1788618143091.jpg"
+                  src="https://www.thetrentonline.com/wp-content/uploads/2017/01/Bishop-David-Oyedepo-spitting-prophetic-fires.jpg"
                   alt="Bishop David Oyedepo"
                   referrerPolicy="no-referrer"
                   className="w-full h-full object-cover object-top"
