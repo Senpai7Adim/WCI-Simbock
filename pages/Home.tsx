@@ -332,7 +332,7 @@ export const Home: React.FC = () => {
               <div className="bg-stone-800/80 rounded-3xl overflow-hidden border border-stone-700/70 hover:border-nobel-gold transition-all duration-300 flex flex-col group shadow-xl">
                 <div className="relative h-64 overflow-hidden bg-stone-950">
                   <img
-                    src="public\images\1788800894816.jpg"
+                    src="/images/1788800894816.jpg"
                     alt="Holy Communion Table Service"
                     referrerPolicy="no-referrer"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-90"
