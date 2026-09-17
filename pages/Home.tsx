@@ -16,7 +16,7 @@ const PastorImage = () => {
       src="/667864879_122195525894826511_5622559667234970482_n-removebg-preview.png"
       alt="Pastor Success"
       onLoad={() => setLoaded(true)}
-      className={`absolute bottom-0 right-0 md:right-12 h-[55vh] md:h-[85vh] object-contain object-bottom pointer-events-none z-20 transition-opacity duration-1000 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+      className={`absolute bottom-0 right-0 md:right-12 h-[380px] sm:h-[480px] md:h-[85vh] object-contain object-bottom pointer-events-none z-20 transition-opacity duration-1000 ${loaded ? 'opacity-100' : 'opacity-0'}`}
     />
   );
 };
@@ -34,9 +34,9 @@ const ProvenImage = () => {
 const BackgroundImage = ({ img, index }: { img: string, index: number }) => {
   const [loaded, setLoaded] = useState(false);
   return (
-    <div className="w-full max-w-5xl mx-auto relative min-h-[300px] flex items-center justify-center">
+    <div className="w-full max-w-5xl mx-auto relative min-h-[180px] md:min-h-[300px] flex items-center justify-center">
       {!loaded && <Loader2 className="w-10 h-10 text-nobel-gold animate-spin absolute z-0" />}
-      <img src={img} alt={`Slide ${index + 1}`} className={`w-full h-auto max-h-[75vh] object-contain mx-auto rounded-xl shadow-2xl relative z-10 transition-opacity duration-700 ${loaded ? 'opacity-100' : 'opacity-0'}`} onLoad={() => setLoaded(true)} referrerPolicy="no-referrer" />
+      <img src={img} alt={`Slide ${index + 1}`} className={`w-full h-auto max-h-[450px] md:max-h-[75vh] object-contain mx-auto rounded-xl shadow-2xl relative z-10 transition-opacity duration-700 ${loaded ? 'opacity-100' : 'opacity-0'}`} onLoad={() => setLoaded(true)} referrerPolicy="no-referrer" />
     </div>
   );
 };
@@ -198,10 +198,10 @@ export const Home: React.FC = () => {
         </section>
 
         {/* Prophetic Focus Section */}
-        <section className="relative bg-stone-900 py-24 overflow-hidden">
-          <div className="relative z-10 container mx-auto px-6 text-center text-white mb-16">
-            <h2 className="font-serif text-5xl md:text-7xl font-bold mb-8 text-nobel-gold drop-shadow-lg">{propheticFocus.title}</h2>
-            <p className="max-w-3xl mx-auto text-xl font-light leading-relaxed drop-shadow-md">
+        <section className="relative bg-stone-900 py-12 md:py-24 overflow-hidden">
+          <div className="relative z-10 container mx-auto px-6 text-center text-white mb-8 md:mb-16">
+            <h2 className="font-serif text-3xl sm:text-5xl md:text-7xl font-bold mb-4 md:mb-8 text-nobel-gold drop-shadow-lg">{propheticFocus.title}</h2>
+            <p className="max-w-3xl mx-auto text-base sm:text-lg md:text-xl font-light leading-relaxed drop-shadow-md">
               {propheticFocus.text || "Rev 3:7-8"}
             </p>
           </div>
