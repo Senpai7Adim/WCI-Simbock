@@ -24,9 +24,9 @@ const PastorImage = () => {
 const ProvenImage = () => {
   const [loaded, setLoaded] = useState(false);
   return (
-    <div className="relative mb-8 min-h-[200px] flex items-center justify-center w-full">
+    <div className="relative mb-8 min-h-[150px] flex items-center justify-center w-full max-w-lg mx-auto">
       {!loaded && <Loader2 className="w-8 h-8 text-nobel-gold animate-spin absolute z-0" />}
-      <img src="https://faithtabernacle.org.ng/old_images/proven.png" alt="Proven Strategies" onLoad={() => setLoaded(true)} referrerPolicy="no-referrer" className={`w-[120%] lg:w-auto lg:max-w-full max-w-[120%] h-auto relative z-10 transition-all duration-700 ${loaded ? 'opacity-100' : 'opacity-0'}`} />
+      <img src="https://faithtabernacle.org.ng/old_images/proven.png" alt="Proven Strategies" onLoad={() => setLoaded(true)} referrerPolicy="no-referrer" className={`w-full h-auto relative z-10 transition-all duration-700 ${loaded ? 'opacity-100' : 'opacity-0'}`} />
     </div>
   );
 };
@@ -178,11 +178,11 @@ export const Home: React.FC = () => {
 
         {/* Proven Strategies Section */}
         <section
-          className="relative min-h-[50vh] md:min-h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat py-20 md:py-0"
+          className="relative py-16 md:py-28 flex items-center justify-center bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: "url('https://faithtabernacle.org.ng/old_images/proven.jpg')" }}
         >
           <div className="absolute inset-0 bg-black/40 z-0 h-full w-full" /> {/* Optional overlay for better visibility */}
-          <div className="relative z-10 container mx-auto px-6 py-24">
+          <div className="relative z-10 container mx-auto px-6">
             <div className="flex flex-col items-center justify-center">
               <ProvenImage />
               <a
@@ -191,7 +191,7 @@ export const Home: React.FC = () => {
                 rel="noopener noreferrer"
                 className="inline-block px-8 py-4 bg-white text-stone-900 font-bold tracking-widest uppercase text-sm hover:bg-nobel-gold hover:text-white transition-colors duration-300 shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-nobel-gold focus-visible:ring-offset-2"
               >
-                VIEW DOCUMENT
+                VOIR DOCUMENT
               </a>
             </div>
           </div>
@@ -280,7 +280,7 @@ export const Home: React.FC = () => {
               <div className="bg-stone-800/80 rounded-3xl overflow-hidden border border-stone-700/70 hover:border-nobel-gold transition-all duration-300 flex flex-col group shadow-xl">
                 <div className="relative h-64 overflow-hidden bg-stone-950">
                   <img
-                    src="/images/sunday_worship_service_1788618161094.jpg"
+                    src="https://i.imgur.com/oK4q9Wd.jpeg"
                     alt="Sunday Worship Service at Winners Chapel"
                     referrerPolicy="no-referrer"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-90"
