@@ -6,6 +6,7 @@ import { db, storage } from '../firebase';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { Loader2 } from 'lucide-react';
+import { getApiBaseUrl } from '../utils/api';
 
 export const Admin: React.FC = () => {
   const { user, isAdmin, loading } = useAuth();
@@ -44,44 +45,61 @@ export const Admin: React.FC = () => {
     if (isAdmin) {
       const loadAllData = async () => {
         setDataLoading(true);
-        await Promise.all([
-          fetchSettings(),
-          fetchUsers(),
-          fetchData('events', setEvents),
-          fetchData('testimonies', setTestimonies),
-          fetchData('gallery', setGallery)
-        ]);
-        setDataLoading(false);
+        try {
+          await Promise.allSettled([
+            fetchSettings(),
+            fetchUsers(),
+            fetchData('events', setEvents),
+            fetchData('testimonies', setTestimonies),
+            fetchData('gallery', setGallery)
+          ]);
+        } catch (err) {
+          console.error("Dashboard data load error:", err);
+        } finally {
+          setDataLoading(false);
+        }
       };
       loadAllData();
     }
   }, [isAdmin]);
 
   const fetchSettings = async () => {
-    const focusRef = doc(db, 'settings', 'propheticFocus');
-    const focusSnap = await getDoc(focusRef);
-    if (focusSnap.exists()) {
-      setPropheticFocus(focusSnap.data() as any);
-    }
+    try {
+      const focusRef = doc(db, 'settings', 'propheticFocus');
+      const focusSnap = await getDoc(focusRef);
+      if (focusSnap.exists()) {
+        setPropheticFocus(focusSnap.data() as any);
+      }
 
-    const contactRef = doc(db, 'settings', 'contactInfo');
-    const contactSnap = await getDoc(contactRef);
-    if (contactSnap.exists()) {
-      setContactInfo(contactSnap.data() as any);
+      const contactRef = doc(db, 'settings', 'contactInfo');
+      const contactSnap = await getDoc(contactRef);
+      if (contactSnap.exists()) {
+        setContactInfo(contactSnap.data() as any);
+      }
+    } catch (err) {
+      console.warn("Could not load settings:", err);
     }
   };
 
   const fetchUsers = async () => {
-    const querySnapshot = await getDocs(collection(db, 'users'));
-    const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    setUsers(data);
+    try {
+      const querySnapshot = await getDocs(collection(db, 'users'));
+      const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setUsers(data);
+    } catch (err) {
+      console.warn("Could not load users list:", err);
+    }
   };
 
   const fetchData = async (collectionName: string, setter: any) => {
-    const q = query(collection(db, collectionName));
-    const querySnapshot = await getDocs(q);
-    const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    setter(data);
+    try {
+      const q = query(collection(db, collectionName));
+      const querySnapshot = await getDocs(q);
+      const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setter(data);
+    } catch (err) {
+      console.warn(`Could not load ${collectionName}:`, err);
+    }
   };
 
   const handleSaveFocus = async () => {
@@ -151,21 +169,29 @@ export const Admin: React.FC = () => {
 
     setSendingAnnouncement(true);
     try {
-      const API_URL = import.meta.env.VITE_API_URL || '';
+      const API_URL = getApiBaseUrl();
       const response = await fetch(`${API_URL}/api/send-announcement`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ subject: announcementSubject, message: announcementMessage }),
       });
 
-      if (!response.ok) throw new Error('Failed to send announcement');
+      if (!response.ok) {
+        throw new Error('Server broadcast returned an error');
+      }
+
       const data = await response.json();
-      toast.success(`Announcement sent successfully to ${data.sent || 0} users!`);
+      if (data.sent > 0) {
+        toast.success(`Announcement broadcast successfully to ${data.sent} registered members!`);
+      } else {
+        toast.success(`Announcement broadcast triggered! ${data.note ? `(${data.note})` : ''}`);
+      }
+
       setAnnouncementSubject('');
       setAnnouncementMessage('');
     } catch (err: any) {
       console.error("Announcement Error: ", err);
-      toast.error("Failed to send announcement. Please try again.");
+      toast.error("Failed to broadcast announcement. Please verify server connection.");
     } finally {
       setSendingAnnouncement(false);
     }
@@ -327,7 +353,7 @@ export const Admin: React.FC = () => {
         toast.success(`${collectionName.slice(0, -1)} added successfully!`);
 
         // Notify all users by email (fire-and-forget, don't block UI)
-        const API_URL = import.meta.env.VITE_API_URL || '';
+        const API_URL = getApiBaseUrl();
         if (activeTab === 'events') {
           fetch(`${API_URL}/api/send-event`, {
             method: 'POST',
@@ -571,7 +597,7 @@ export const Admin: React.FC = () => {
                   disabled={sendingAnnouncement}
                   className="px-6 py-3 mt-4 w-full sm:w-auto bg-nobel-gold text-white rounded-lg hover:bg-red-700 transition-colors font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-nobel-gold focus-visible:ring-offset-2 flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed"
                 >
-                  {sendingAnnouncement ? <><Loader2 className="w-5 h-5 mr-2 animate-spin" /> Sending to all users...</> : 'Review & Send Announcement'}
+                  {sendingAnnouncement ? <><Loader2 className="w-5 h-5 mr-2 animate-spin" /> Broadcasting Announcement...</> : 'Broadcast Announcement'}
                 </button>
               </div>
             </div>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Home, Users, Briefcase, MessageSquare, Image as ImageIcon, Phone, UserCircle, Search, Grid } from 'lucide-react';
 import { useAuth } from '../AuthContext';
+import { NotificationCenter } from './NotificationCenter';
 
 export const Navbar: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -50,6 +51,10 @@ export const Navbar: React.FC = () => {
               );
             })}
             
+            <div className="flex items-center pl-2">
+              <NotificationCenter />
+            </div>
+
             <div className="flex flex-col items-center justify-center min-w-[80px] min-h-[52px] border-l border-stone-200 pl-6 ml-2">
               {user ? (
                 <button onClick={logout} aria-label="Sign Out" className="flex flex-col items-center hover:text-nobel-gold transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-nobel-gold rounded-md p-1">
@@ -65,7 +70,8 @@ export const Navbar: React.FC = () => {
             </div>
           </div>
 
-          <div className="lg:hidden flex items-center gap-4">
+          <div className="lg:hidden flex items-center gap-2 sm:gap-4">
+            <NotificationCenter />
             <button 
               className="text-stone-600 p-2 hover:text-nobel-gold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-nobel-gold rounded-md" 
               onClick={() => setMenuOpen(!menuOpen)}

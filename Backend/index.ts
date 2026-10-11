@@ -9,6 +9,7 @@ import {
   eventEmailHtml, 
   testimonyEmailHtml, 
   contactEmailHtml,
+  announcementEmailHtml,
   EMAIL_USER,
   CHURCH_NAME
 } from './emailHelpers.js';
@@ -27,6 +28,8 @@ app.get('/api/test', (req, res) => {
       hasEmailUser: !!process.env.EMAIL_USER,
       hasEmailPass: !!process.env.EMAIL_PASS,
       hasFirebaseId: !!process.env.FIREBASE_PROJECT_ID,
+      hasClientEmail: !!process.env.FIREBASE_CLIENT_EMAIL,
+      hasPrivateKey: !!process.env.FIREBASE_PRIVATE_KEY,
     },
     nodeVersion: process.version,
     serverType: 'Express'
@@ -168,18 +171,40 @@ app.post('/api/send-announcement', async (req, res) => {
   try {
     const hasAdmin = await initAdmin();
     if (!hasAdmin) {
-      console.log('ℹ️ Admin credentials not set; skipping announcement broadcast.');
-      return res.json({ success: true, sent: 0, note: 'Firebase Admin credentials not set; skipped broadcast.' });
+      console.log('ℹ️ Admin credentials not set; skipping announcement email broadcast.');
+      return res.json({ 
+        success: true, 
+        sent: 0, 
+        note: 'Firebase Admin credentials not configured on server; email broadcast skipped.' 
+      });
     }
 
     const db = getFirestore(process.env.FIREBASE_DATABASE_ID || 'ai-studio-e8558fad-a857-49e6-9314-3593cef406a0');
     const snapshot = await db.collection('users').get();
     const emails = snapshot.docs.map(d => d.data().email as string).filter(Boolean);
 
-    if (emails.length === 0) return res.json({ success: true, sent: 0 });
+    // Persist announcement in Firestore so it displays in website Notification Center
+    try {
+      await db.collection('announcements').add({
+        subject,
+        message,
+        createdAt: new Date().toISOString(),
+        sentEmailCount: emails.length,
+      });
+      console.log('✅ Announcement saved to Firestore announcements collection');
+    } catch (saveErr: any) {
+      console.warn('⚠️ Could not save announcement to collection:', saveErr.message);
+    }
+
+    if (emails.length === 0) {
+      return res.json({ 
+        success: true, 
+        sent: 0, 
+        note: 'No registered user emails found in database to broadcast to.' 
+      });
+    }
 
     const transporter = createTransporter();
-    const { announcementEmailHtml, EMAIL_USER, CHURCH_NAME } = await import('./emailHelpers.js');
     const html = announcementEmailHtml(subject, message);
     
     // Chunking to avoid SMTP limits/timeouts
@@ -200,6 +225,39 @@ app.post('/api/send-announcement', async (req, res) => {
   } catch (error: any) {
     console.error('🔥 Send Announcement Error:', error.message);
     res.status(500).json({ error: 'Failed to send announcements', message: error.message });
+  }
+});
+
+// 6. Get Announcements
+app.get('/api/announcements', async (req, res) => {
+  try {
+    const hasAdmin = await initAdmin();
+    if (!hasAdmin) {
+      return res.json([]);
+    }
+    const db = getFirestore(process.env.FIREBASE_DATABASE_ID || 'ai-studio-e8558fad-a857-49e6-9314-3593cef406a0');
+    const snapshot = await db.collection('announcements').orderBy('createdAt', 'desc').limit(20).get();
+    const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    res.json(data);
+  } catch (error: any) {
+    console.error('🔥 Fetch Announcements Error:', error.message);
+    res.json([]);
+  }
+});
+
+// 7. Delete Announcement
+app.delete('/api/announcements/:id', async (req, res) => {
+  try {
+    const hasAdmin = await initAdmin();
+    if (!hasAdmin) return res.status(500).json({ error: 'Admin not initialized' });
+
+    const { id } = req.params;
+    const db = getFirestore(process.env.FIREBASE_DATABASE_ID || 'ai-studio-e8558fad-a857-49e6-9314-3593cef406a0');
+    await db.collection('announcements').doc(id).delete();
+    res.json({ success: true });
+  } catch (error: any) {
+    console.error('🔥 Delete Announcement Error:', error.message);
+    res.status(500).json({ error: error.message });
   }
 });
 

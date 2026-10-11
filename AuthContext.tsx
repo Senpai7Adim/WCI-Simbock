@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { auth, db } from './firebase';
+import { getApiBaseUrl } from './utils/api';
 
 interface AuthContextType {
   user: User | null;
@@ -48,7 +49,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         });
         // Send welcome email to brand new users only
         try {
-          const API_URL = import.meta.env.VITE_API_URL || '';
+          const API_URL = getApiBaseUrl();
           await fetch(`${API_URL}/api/send-welcome`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },

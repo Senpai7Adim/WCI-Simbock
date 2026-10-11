@@ -6,6 +6,7 @@ import { MapPin, Phone, Mail, Heart, Copy, Check, Loader2, Sparkles } from 'luci
 import toast from 'react-hot-toast';
 import { HomecellDirectory } from '../components/HomecellDirectory';
 import { ChurchLocationMap } from '../components/ChurchLocationMap';
+import { getApiBaseUrl } from '../utils/api';
 
 export const Contact: React.FC = () => {
   const [contactInfo, setContactInfo] = useState<any>({ paymentMethods: [] });
@@ -29,7 +30,7 @@ export const Contact: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-      const API_URL = import.meta.env.VITE_API_URL || '';
+      const API_URL = getApiBaseUrl();
       const response = await fetch(`${API_URL}/api/send-contact`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

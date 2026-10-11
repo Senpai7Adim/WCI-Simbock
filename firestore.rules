@@ -170,6 +170,11 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
 
+    match /announcements/{announcementId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
     match /settings/propheticFocus {
       allow read: if true;
       allow create: if isAdmin() && isValidPropheticFocus();
