@@ -16,7 +16,26 @@ const App: React.FC = () => {
   return (
     <AuthProvider>
       <BrowserRouter>
-        <Toaster position="top-right" />
+        <Toaster
+          position="top-right"
+          toastOptions={{
+            duration: 4000,
+            style: {
+              fontFamily: "'Inter', sans-serif",
+              fontSize: '0.875rem',
+              fontWeight: 500,
+              borderRadius: '14px',
+              boxShadow: '0 10px 40px -4px rgba(0,0,0,0.18)',
+              padding: '12px 16px',
+            },
+            success: {
+              iconTheme: { primary: '#E3000F', secondary: '#fff' },
+            },
+            error: {
+              iconTheme: { primary: '#dc2626', secondary: '#fff' },
+            },
+          }}
+        />
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />

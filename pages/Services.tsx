@@ -146,10 +146,6 @@ export const Services: React.FC = () => {
 
       {/* Header Banner */}
       <section className="container mx-auto px-6 max-w-6xl mb-16 text-center">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-50 border border-red-100 text-nobel-gold text-xs font-bold uppercase tracking-wider mb-6">
-          <Flame className="w-3.5 h-3.5" />
-          Living Faith Church Worldwide · WCI Simbock
-        </div>
         <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl text-stone-900 font-bold tracking-tight mb-6">
           Worship & Encounter Services
         </h1>
