@@ -145,6 +145,26 @@ body {
 .animate-scale-in { animation: scale-in .3s ease both; }
 .animate-hero-reveal { animation: hero-reveal .9s cubic-bezier(.22,1,.36,1) both; }
 
+@keyframes panel-pop {
+  0% {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.97);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.panel-pop {
+  animation: panel-pop 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform-origin: top right;
+}
+@media (max-width: 639px) {
+  .panel-pop {
+    transform-origin: top center;
+  }
+}
+
 /* ---------- Navbar ---------- */
 .nav-frosted {
   background: rgba(255,255,255,0.9);
